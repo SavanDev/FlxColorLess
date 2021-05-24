@@ -1,0 +1,125 @@
+{
+  "name": "ColorLess!",
+  "ogmoVersion": "3.4.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#282c34ff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 12, "y": 12},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 192, "y": 132},
+  "levelMaxSize": {"x": 192, "y": 132},
+  "levelValues": [],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": [],
+  "layers": [
+    {
+      "definition": "tile",
+      "name": "Default",
+      "gridSize": {"x": 12, "y": 12},
+      "exportID": "84201617",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "DefaultTile"
+    },
+    {
+      "definition": "entity",
+      "name": "Entities",
+      "gridSize": {"x": 12, "y": 12},
+      "exportID": "84244893",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "tile",
+      "name": "Environment",
+      "gridSize": {"x": 12, "y": 12},
+      "exportID": "84269171",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "BackTile"
+    }
+  ],
+  "entities": [
+    {
+      "exportID": "84246472",
+      "name": "Player",
+      "limit": -1,
+      "size": {"x": 12, "y": 24},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#00d6ffff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 12, "y": 24},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
+    },
+    {
+      "exportID": "84240621",
+      "name": "Strawberry",
+      "limit": -1,
+      "size": {"x": 12, "y": 12},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 12, "y": 12},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
+    }
+  ],
+  "tilesets": [
+    {"label": "DefaultTile", "path": "../images/tileMap.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAANdJREFUaIHtmVsKwyAQRbV0Q8lOuqYuqDtxS+lH6UekcGPGGYk9B/Ih+Ag34yFiTo08trS1jvHklVP2nP/mOfkMEJCAgARdAlrXzxPVjqRZcLWko1+8lH0bSQ/GHFD9RT2JXOsLFSQwBxTpoBGipoIEOEhwj1+yL8/F92yIgwQ4SICDBFSQAAcJqCDB1A4qZT9GtX9x+f+gI9QhtAQ9tYOO9Fd9cJBgegdZ+1BBAhyEg2zgIBxku2e7/L2Y9/p/UUEWujqo9exzph2NeYuNhi02GAISEJDgDcrDWwrTiTzLAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0},
+    {"label": "BackTile", "path": "../images/backTile.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAASFJREFUaIHtmDEOwjAMRb8rFg7RgY2VlRtwqE7lbKysbAzco2GgRWnrkErYVQx+EgIRFNKHv0MKOI7jOI7jOA4Dic/YInwcbxS+U5FKdDZOzmPBZwpGTlBKTg3TkmQEpS64njwbRDZiwLxalo4ViqygVKRyYwUjt6OkYjaI4TCwo8lHLMZo1cToCvImnSDVg2IMxAvQ2sWmsTIcNdlfcekfQCPVA/hZLIvaYo/7aiTqcutMiRlQ28VO2459bY2N5uSWxQywFRR61l5MicwExWJc0kTQW8idXg+4JN2jxg8watJERCGEgF0Yvbf6qgpiVkGxkH+XAyQiRmdyOT18D2pAlm6sa+JNOgMfoxbhm0Nle+Crr7naOqgCChWUkpMbK5UnYdlTJiohvIgAAAAASUVORK5CYII=", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+  ]
+}
