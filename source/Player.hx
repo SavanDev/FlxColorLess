@@ -21,9 +21,9 @@ class Player extends FlxSprite
 
 		setFacingFlip(FlxObject.LEFT, true, false);
 		setFacingFlip(FlxObject.RIGHT, false, false);
-		animation.add("default", [0, 4], 3, true);
-		animation.add("walk", [0, 1, 0, 2], 5, true);
-		animation.add("jump", [3]);
+		animation.add("default", [0, 1], 3, true);
+		animation.add("walk", [5, 6, 5, 7], 5, true);
+		animation.add("jump", [12]);
 		animation.play("default");
 	}
 
