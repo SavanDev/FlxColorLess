@@ -21,6 +21,6 @@ class Main extends Sprite
 		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
 		FlxG.game.stage.quality = StageQuality.LOW;
 		FlxG.resizeWindow(_width, _height);
-		FlxG.fullscreen = true;
+		// FlxG.fullscreen = true;
 	}
 }

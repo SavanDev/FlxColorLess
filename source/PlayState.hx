@@ -5,10 +5,14 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
+import flixel.effects.FlxFlicker;
+import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import lime.system.System;
 import objects.Strawberry;
 
 class PlayState extends FlxState
@@ -19,7 +23,12 @@ class PlayState extends FlxState
 	var player:Player;
 	var strawberry:Strawberry;
 	var walls:FlxTilemap;
+
 	var finish:Bool = false;
+	var respawn:Bool = false;
+
+	var fade:FadeBoy;
+	var initPos:FlxPoint;
 
 	function placeEntities(entity:EntityData)
 	{
@@ -27,6 +36,7 @@ class PlayState extends FlxState
 		{
 			case "Player":
 				player.setPosition(entity.x, entity.y);
+				initPos.set(entity.x, entity.y);
 			case "Strawberry":
 				strawberry.setPosition(entity.x, entity.y);
 				FlxTween.num(entity.y, entity.y + 3, .5, {type: PINGPONG}, (v:Float) -> strawberry.y = v);
@@ -37,13 +47,12 @@ class PlayState extends FlxState
 	{
 		super.create();
 
-		FlxG.camera.fade(true);
-
 		Input.init();
 		bgColor = 0xff0163c6;
 		FlxG.timeScale = 1.03;
 
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level$LEVEL.json');
+		initPos = new FlxPoint();
 
 		var backWalls = map.loadTilemap(Paths.getImage("environment"), "Environment");
 		add(backWalls);
@@ -62,15 +71,19 @@ class PlayState extends FlxState
 		map.loadEntities(placeEntities, "Entities");
 
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
-		screen.alpha = .5;
+		screen.alpha = .25;
 		add(screen);
+
+		fade = new FadeBoy();
+		add(fade);
 
 		var uiBorder = new FlxSprite(0, 132);
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
 		add(uiBorder);
 
-		var gameName = new FlxText(5, 132 + 5, 0, "ColorLess!");
-		add(gameName);
+		var uiText = new FlxText(5, 132 + 5, FlxG.width - 10, "Welcome to ColorLess!");
+		uiText.alignment = CENTER;
+		add(uiText);
 	}
 
 	override public function update(elapsed:Float)
@@ -89,9 +102,27 @@ class PlayState extends FlxState
 
 		if (player.x > FlxG.width && !finish)
 		{
+			player.x += 200;
 			finish = true;
 			LEVEL++;
-			FlxG.camera.fade(() -> FlxG.resetState());
+			fade.animation.play("fadeOut");
 		}
+
+		if (player.y > FlxG.height && !finish && !respawn)
+		{
+			respawn = true;
+			new FlxTimer().start(1, (_) ->
+			{
+				player.setPosition(initPos.x, initPos.y);
+				FlxFlicker.flicker(player);
+				new FlxTimer().start(1, (_) -> respawn = false);
+			});
+		}
+
+		if (finish && fade.animation.finished)
+			FlxG.resetState();
+
+		if (FlxG.keys.justPressed.ESCAPE)
+			System.exit(0);
 	}
 }
