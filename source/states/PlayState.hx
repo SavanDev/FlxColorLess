@@ -1,4 +1,4 @@
-package;
+package states;
 
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -86,6 +86,31 @@ class PlayState extends FlxState
 		add(uiText);
 	}
 
+	function playerInteraction()
+	{
+		if (player.x < 0)
+			player.x = 0;
+
+		if (player.x > FlxG.width)
+		{
+			player.kill();
+			fade.fadeOut();
+			LEVEL++;
+		}
+
+		if (player.y > FlxG.height && !respawn)
+		{
+			respawn = true;
+			FlxG.camera.shake(.01, .25);
+			new FlxTimer().start(1, (_) ->
+			{
+				player.setPosition(initPos.x, initPos.y);
+				FlxFlicker.flicker(player);
+				new FlxTimer().start(1, (_) -> respawn = false);
+			});
+		}
+	}
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -97,29 +122,9 @@ class PlayState extends FlxState
 			POINTS++;
 		});
 
-		if (player.x < 0)
-			player.x = 0;
-
-		if (player.x > FlxG.width && !finish)
-		{
-			player.x += 200;
-			finish = true;
-			LEVEL++;
-			fade.animation.play("fadeOut");
-		}
-
-		if (player.y > FlxG.height && !finish && !respawn)
-		{
-			respawn = true;
-			new FlxTimer().start(1, (_) ->
-			{
-				player.setPosition(initPos.x, initPos.y);
-				FlxFlicker.flicker(player);
-				new FlxTimer().start(1, (_) -> respawn = false);
-			});
-		}
-
-		if (finish && fade.animation.finished)
+		if (player.alive)
+			playerInteraction();
+		else if (!fade.hasFadeOut)
 			FlxG.resetState();
 
 		if (FlxG.keys.justPressed.ESCAPE)
