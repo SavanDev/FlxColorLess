@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import states.PlayState;
 
 class Player extends FlxSprite
 {
@@ -15,9 +16,8 @@ class Player extends FlxSprite
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(Paths.getImage("player"), true, 12, 24);
+		loadGraphic(Paths.getImage(!PlayState.BSIDE ? "player" : "Bplayer"), true, 12, 24);
 		acceleration.y = 300;
-		drag.x = SPEED * 16;
 
 		setFacingFlip(FlxObject.LEFT, true, false);
 		setFacingFlip(FlxObject.RIGHT, false, false);
@@ -25,6 +25,9 @@ class Player extends FlxSprite
 		animation.add("walk", [5, 6, 5, 7], 5, true);
 		animation.add("jump", [12]);
 		animation.play("default");
+
+		if (PlayState.BSIDE)
+			facing = FlxObject.LEFT;
 	}
 
 	function movement(elapsed:Float)
@@ -44,6 +47,9 @@ class Player extends FlxSprite
 			velocity.x = SPEED;
 			facing = FlxObject.RIGHT;
 		}
+
+		if (!left && !right)
+			velocity.x = 0;
 
 		// sistema de salto (gracias HaxeFlixel Snippets!)
 		if (jumping && !jump)

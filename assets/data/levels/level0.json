@@ -28,7 +28,10 @@
       "gridCellHeight": 12,
       "gridCellsX": 16,
       "gridCellsY": 11,
-      "entities": []
+      "entities": [
+        {"name": "FinishEvent", "id": 0, "_eid": "61763100", "x": 48, "y": 96, "originX": 0, "originY": 0},
+        {"name": "BPlayer", "id": 1, "_eid": "62286992", "x": 168, "y": 96, "originX": 0, "originY": 0}
+      ]
     },
     {
       "name": "Environment",

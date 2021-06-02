@@ -12,11 +12,13 @@ import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import lime.system.System;
 import openfl.geom.Matrix;
 
 class CutsceneState extends FlxState
 {
 	var playerCutscene:FlxSprite;
+
 	var walls:FlxTilemap;
 
 	var fade:FadeBoy;
@@ -52,9 +54,16 @@ class CutsceneState extends FlxState
 		playerCutscene.animation.add("state3", [6, 7], 3, false);
 		playerCutscene.animation.add("state4", [9, 10, 9, 11], 5);
 		playerCutscene.animation.finishCallback = cutsceneCallback;
-		playerCutscene.screenCenter(X);
-		playerCutscene.y = 12 * 8;
 		add(playerCutscene);
+
+		map.loadEntities((_entity:EntityData) ->
+		{
+			switch (_entity.name)
+			{
+				case "FinishEvent":
+					playerCutscene.setPosition(_entity.x, _entity.y);
+			}
+		}, "Entities");
 
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
 		screen.alpha = .25;
@@ -67,27 +76,32 @@ class CutsceneState extends FlxState
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
 		add(uiBorder);
 
-		uiText = new FlxText(5, 132 + 5, FlxG.width - 10, "Welcome to ColorLess!");
+		uiText = new FlxText(5, 132 + 5, FlxG.width - 10, "Press ENTER to start!");
 		uiText.alignment = CENTER;
 		add(uiText);
 
-		screenEffect = new FlxSprite().makeGraphic(FlxG.width, 12 * 11, FlxColor.TRANSPARENT);
-		var glitchEffect = new FlxGlitchEffect(4);
-		var glitchSprite = new FlxEffectSprite(screenEffect, [glitchEffect]);
-		glitchSprite.setColorTransform(1, 0, 0, 1);
-		glitchSprite.visible = false;
-		add(glitchSprite);
+		/*screenEffect = new FlxSprite().makeGraphic(FlxG.width, 12 * 11, FlxColor.TRANSPARENT);
+			var glitchEffect = new FlxGlitchEffect(4);
+			var glitchSprite = new FlxEffectSprite(screenEffect, [glitchEffect]);
+			glitchSprite.setColorTransform(1, 0, 0, 1);
+			glitchSprite.visible = false;
+			add(glitchSprite);
 
-		glitchTimer = new FlxTimer().start(5, (_) ->
-		{
-			new FlxTimer().start(.5, (_) ->
+			glitchTimer = new FlxTimer().start(5, (_) ->
 			{
-				screenEffect.drawFrame();
-				var screenPixels = screenEffect.framePixels;
-				screenPixels.draw(FlxG.camera.canvas, new Matrix(1, 0, 0, 1, 0, 0));
-				glitchSprite.visible = !glitchSprite.visible;
-			}, 2);
-		}, 0);
+				new FlxTimer().start(.5, (_) ->
+				{
+					screenEffect.drawFrame();
+					var screenPixels = screenEffect.framePixels;
+					screenPixels.draw(FlxG.camera.canvas, new Matrix(1, 0, 0, 1, 0, 0));
+					glitchSprite.visible = !glitchSprite.visible;
+
+					if (glitchSprite.visible)
+						bgColor = FlxColor.RED;
+					else
+						bgColor = 0xff0163c6;
+				}, 2);
+		}, 0);*/
 	}
 
 	function cutsceneCallback(name:String)
@@ -117,7 +131,7 @@ class CutsceneState extends FlxState
 		if (FlxG.keys.justPressed.ENTER && !startGame)
 		{
 			FlxTween.num(1, 0, (v:Float) -> uiText.alpha = v);
-			glitchTimer.cancel();
+			// glitchTimer.cancel();
 			playerCutscene.animation.play("state1");
 			startGame = true;
 		}
@@ -130,5 +144,8 @@ class CutsceneState extends FlxState
 
 		if (!playerCutscene.alive && !fade.hasFadeOut)
 			FlxG.switchState(new states.PlayState());
+
+		if (FlxG.keys.justPressed.ESCAPE)
+			System.exit(0);
 	}
 }

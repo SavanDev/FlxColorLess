@@ -20,9 +20,11 @@ class Main extends Sprite
 	{
 		super();
 		addChild(new FlxGame(0, 0, _initialState));
+		Input.init();
 		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
 		FlxG.game.stage.quality = StageQuality.LOW;
 		FlxG.resizeWindow(_width, _height);
+		FlxG.fixedTimestep = false;
 
 		// Center window on screen
 		var screenWidth = Capabilities.screenResolutionX;

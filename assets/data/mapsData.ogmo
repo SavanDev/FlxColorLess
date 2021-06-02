@@ -116,10 +116,154 @@
       "nodeGhost": true,
       "tags": [],
       "values": []
+    },
+    {
+      "exportID": "61533423",
+      "name": "Spike",
+      "limit": -1,
+      "size": {"x": 12, "y": 6},
+      "origin": {"x": 0, "y": 6},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#b600ffff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 12, "y": 6},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
+    },
+    {
+      "exportID": "61768265",
+      "name": "Artefact",
+      "limit": -1,
+      "size": {"x": 12, "y": 12},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#0068ffff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 12, "y": 12},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
+    },
+    {
+      "exportID": "61763100",
+      "name": "FinishEvent",
+      "limit": -1,
+      "size": {"x": 12, "y": 24},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#66bdffff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 12, "y": 24},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
+    },
+    {
+      "exportID": "62286992",
+      "name": "BPlayer",
+      "limit": -1,
+      "size": {"x": 12, "y": 24},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#b10000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 12, "y": 24},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
     }
   ],
   "tilesets": [
-    {"label": "DefaultTile", "path": "../images/tileMap.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAANdJREFUaIHtmVsKwyAQRbV0Q8lOuqYuqDtxS+lH6UekcGPGGYk9B/Ih+Ag34yFiTo08trS1jvHklVP2nP/mOfkMEJCAgARdAlrXzxPVjqRZcLWko1+8lH0bSQ/GHFD9RT2JXOsLFSQwBxTpoBGipoIEOEhwj1+yL8/F92yIgwQ4SICDBFSQAAcJqCDB1A4qZT9GtX9x+f+gI9QhtAQ9tYOO9Fd9cJBgegdZ+1BBAhyEg2zgIBxku2e7/L2Y9/p/UUEWujqo9exzph2NeYuNhi02GAISEJDgDcrDWwrTiTzLAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0},
-    {"label": "BackTile", "path": "../images/environment.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAAGJJREFUaIHt1EEKgCAQBdCxm3TWDtpRapEIWSC4UfC9nYOL8TNOBAAAAAAAAMCfKxvdxwxSXaiDSSl97qzk9fgSzpnL+3NcOaRtdAOz88V6WNItRwinSUgRYUl3Mj2FCWq4Adn0IoDbJMBXAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+    {"label": "DefaultTile", "path": "../images/tileMap.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAASJJREFUaIHtmlEOgjAMhjfChdxNPJP340r4YEhIIf1X2pUx+73o4txqbT9CRk5C3mtapd/xppTf67Lo15r0S/TFlhz6/irDJcia4RK0b6tuWqyUY2m3HLeOd0+WLk4lbRl4DagqaDx0PoqXzh+uxaxRJ8iizy33Qg6in6P56hZLya/NPP+MDXUFeTrI23cphYMgwznImlnqlBtiZGnddocKkm4YDvpzDgmS9vnoDooKAoSDAFFBANZBNfcqPTvoLH5ufMbcIrDeoPFLfg/roJqe79lBFvGHgwDQQYjeHaSdM99x6XwSbIuFg8JBEDZB4aDKCrI+l/JGc86WPy/ZwwjScyZrvPcPBwEmyb3KlXMm67E3+QnP+3BEi91MJAgQCQJ8ARjMkaak08mtAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0},
+    {"label": "BackTile", "path": "../images/environment.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAAZpJREFUaIHtmk1uwjAUhMehXSBFbIuyiTgeh+gqh+B4FZuo3VZILCowC2P86jqpDTb+kT8pws+EJB6NRyEOMIBjAAcAqzbFZp8ioAOzadv8thCaW6uKNEPi4mw78G2njh26przkIM7+oNoAELLejWD0/A3eSYdNm2KzzwNIcY4nse0PYgtZ607KKoOOJ+DrJ1xtQgmUoJN2I1jfAsuFqL/PwEpdsdd6uQD6VpyTXkOTg3Mkq0YMKlRtIpsMAsI6qIgMiuMgSYJOSiGDvE8L3zxrmmUp0DMzCDCLRL5OnxgZlLSDgN8uinMflBHVQRo1gxypDjJQM8iB6iCNmkGOVAcZqBnkQDIO4pxzAGCMRXVYkhkkxdHbc4wAl5vN/vcS3UE3QT6u3RtRzjnJJErnMduyzqAzwNda3/ra/8hxp4juIODvtJpzDxXiE0IcSePBRUlmEBXkv5CmIvgWx8Tbq3r8GqI2YR7IAO7ybJk6ybc4dOm5b8VnyFrPoGlcVycCrmbEfHlhGpcBF/3ylIl7BluoSH7/agRYXY3NBZ6EpBhmHBDXAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
   ]
 }
