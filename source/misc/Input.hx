@@ -1,4 +1,4 @@
-package;
+package misc;
 
 import flixel.FlxG;
 #if android

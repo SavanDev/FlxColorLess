@@ -1,6 +1,7 @@
 package objects;
 
 import flixel.FlxSprite;
+import misc.Paths;
 
 class Spike extends FlxSprite
 {

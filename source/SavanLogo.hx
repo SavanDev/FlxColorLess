@@ -1,8 +1,10 @@
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.text.FlxBitmapText;
+import flixel.text.FlxText;
 import flixel.util.FlxTimer;
+import misc.FadeBoy;
+import misc.Paths;
 
 class SavanLogo extends FlxState
 {
@@ -19,8 +21,7 @@ class SavanLogo extends FlxState
 		logo.y -= 5;
 		add(logo);
 
-		var logoText = new FlxBitmapText(Fonts.PF_ARMA_FIVE_16);
-		logoText.text = "SavanDev";
+		var logoText = new FlxText(0, 0, "SavanDev");
 		logoText.screenCenter();
 		logoText.y += 20;
 		add(logoText);

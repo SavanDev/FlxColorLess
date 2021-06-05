@@ -1,7 +1,9 @@
-package;
+package objects;
 
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import misc.Input;
+import misc.Paths;
 import states.PlayState;
 
 class Player extends FlxSprite
@@ -88,10 +90,21 @@ class Player extends FlxSprite
 		}
 	}
 
+	override function kill()
+	{
+		alive = false;
+		animation.stop();
+		animation.frameIndex = 10;
+		velocity.x = 0;
+	}
+
 	override function update(elapsed:Float)
 	{
-		movement(elapsed);
-		playerAnimation();
+		if (alive)
+		{
+			movement(elapsed);
+			playerAnimation();
+		}
 
 		super.update(elapsed);
 	}

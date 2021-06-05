@@ -1,4 +1,4 @@
-package;
+package misc;
 
 class Paths
 {

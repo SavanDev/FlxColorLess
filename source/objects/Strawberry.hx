@@ -1,6 +1,7 @@
 package objects;
 
 import flixel.FlxSprite;
+import misc.Paths;
 
 class Strawberry extends FlxSprite
 {

@@ -1,9 +1,12 @@
+package states;
+
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import lime.system.System;
+import misc.Paths;
 
 class EndingState extends FlxState
 {

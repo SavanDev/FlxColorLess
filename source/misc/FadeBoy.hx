@@ -1,3 +1,5 @@
+package misc;
+
 import flixel.FlxSprite;
 
 class FadeBoy extends FlxSprite

@@ -16,7 +16,11 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.system.System;
+import misc.FadeBoy;
+import misc.Input;
+import misc.Paths;
 import objects.Artefact;
+import objects.Player;
 import objects.Spike;
 import objects.Strawberry;
 
@@ -32,6 +36,7 @@ class PlayState extends FlxState
 	var artefact:Artefact;
 	var finishPlayer:FlxSprite;
 	var walls:FlxTilemap;
+	var fakeWalls:FlxTilemap;
 
 	var finish:Bool = false;
 	var respawn:Bool = false;
@@ -44,7 +49,7 @@ class PlayState extends FlxState
 		"Let's go!",
 		"..."
 	];
-	var bLevelText:Array<String> = [
+	var bSideText:Array<String> = [
 		"It's your fault",
 		"Give up",
 		"You can't do it",
@@ -56,6 +61,7 @@ class PlayState extends FlxState
 
 	var fade:FadeBoy;
 	var initPos:FlxPoint;
+	var uiStrawCount:FlxText;
 
 	function placeEntities(entity:EntityData)
 	{
@@ -97,6 +103,8 @@ class PlayState extends FlxState
 		super.create();
 		bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 
+		var glitchedEffect = new FlxGlitchEffect(2);
+
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level$LEVEL.json');
 		initPos = new FlxPoint();
 
@@ -122,6 +130,9 @@ class PlayState extends FlxState
 
 		map.loadEntities(placeEntities, "Entities");
 
+		fakeWalls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap"), "FakeFloor");
+		add(fakeWalls);
+
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
 		screen.alpha = .25;
 		add(screen);
@@ -129,30 +140,50 @@ class PlayState extends FlxState
 		fade = new FadeBoy();
 		add(fade);
 
-		var uiBorder = new FlxSprite(0, 132);
+		var uiBorder = new FlxSprite(0, Game.getGameHeight());
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
 		add(uiBorder);
 
-		var uiText = new FlxText(5, 132 + 5, FlxG.width - 10, !BSIDE ? levelText[LEVEL] : bLevelText[LEVEL]);
-		uiText.alignment = CENTER;
+		var uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
+		uiText.alignment = RIGHT;
 		add(uiText);
+
+		var uiStrawberry = new FlxSprite(5, Game.getGameHeight() + 5, Paths.getImage("strawberry"));
+		if (!BSIDE)
+			add(uiStrawberry);
+		else
+		{
+			var uiStrawGlitched = new FlxEffectSprite(uiStrawberry, [glitchedEffect]);
+			uiStrawGlitched.setPosition(5, Game.getGameHeight() + 5);
+			add(uiStrawGlitched);
+		}
+
+		uiStrawCount = new FlxText(17, Game.getGameHeight() + 5, 0, "x 0");
+		add(uiStrawCount);
 
 		if (BSIDE)
 		{
 			var spriteCursed = new FlxSprite().loadGraphic(Paths.getImage("cursed"));
-			var glitchedEffect = new FlxGlitchEffect(2);
 			var cursed = new FlxEffectSprite(spriteCursed, [glitchedEffect]);
 			cursed.visible = false;
 			add(cursed);
 
-			new FlxTimer().start(5, (_) ->
+			if (finishPlayer == null)
 			{
-				new FlxTimer().start(.5, (_) ->
+				new FlxTimer().start(5, (_) ->
 				{
-					uiText.visible = !uiText.visible;
-					cursed.visible = !cursed.visible;
-				}, 2);
-			}, 0);
+					new FlxTimer().start(.5, (_) ->
+					{
+						uiText.visible = !uiText.visible;
+						cursed.visible = !cursed.visible;
+					}, 2);
+				}, 0);
+			}
+			else
+			{
+				cursed.visible = true;
+				new FlxTimer().start(.1, (_) -> cursed.alpha = Math.max(0, .5 - (player.x / FlxG.width)), 0);
+			}
 		}
 	}
 
@@ -165,9 +196,13 @@ class PlayState extends FlxState
 
 			if (player.x > FlxG.width)
 			{
-				player.kill();
-				fade.fadeOut();
-				LEVEL++;
+				if (player.y > 0)
+				{
+					player.kill();
+					fade.fadeOut();
+				}
+				else
+					player.x = FlxG.width;
 			}
 		}
 		else
@@ -179,7 +214,6 @@ class PlayState extends FlxState
 			{
 				player.kill();
 				fade.fadeOut();
-				LEVEL--;
 			}
 
 			if (player.x < 0 && LEVEL == 0)
@@ -206,32 +240,75 @@ class PlayState extends FlxState
 		FlxG.collide(player, walls);
 		FlxG.overlap(player, spikes, (_player:Player, _spikes:Spike) ->
 		{
-			player.kill();
-			fade.fadeOut();
+			if (player.alive)
+			{
+				player.kill();
+				FlxFlicker.flicker(player);
+				new FlxTimer().start(1, (_) ->
+				{
+					player.setPosition(initPos.x, initPos.y);
+					player.revive();
+					new FlxTimer().start(1, (_) -> respawn = false);
+				});
+			}
 		});
 		FlxG.overlap(player, strawberry, (_player:Player, _strawberry:Strawberry) ->
 		{
 			_strawberry.kill();
 			POINTS++;
 		});
-		FlxG.overlap(player, artefact, (_player:Player, _artefact:Artefact) ->
-		{
-			artefact.kill();
-			player.kill();
-			FlxG.camera.fade(FlxColor.WHITE, 2, () ->
+		if (artefact != null)
+			FlxG.overlap(player, artefact, (_player:Player, _artefact:Artefact) ->
 			{
-				BSIDE = true;
-				FlxG.resetState();
+				artefact.kill();
+				player.kill();
+				FlxG.camera.fade(FlxColor.WHITE, 2, () ->
+				{
+					BSIDE = true;
+					FlxG.resetState();
+				});
 			});
-		});
-		FlxG.overlap(player, finishPlayer, (obj1, obj2) -> FlxG.switchState(new EndingState()));
+		if (finishPlayer != null)
+			FlxG.overlap(player, finishPlayer, (d1, d2) -> FlxG.switchState(new EndingState()));
+
+		var playerX = player.x + (player.width / 2);
+		var playerY = player.y + (player.height / 2);
+
+		var fakeWallCheck = fakeWalls.getTile(Math.floor(playerX / 12), Math.floor(playerY / 12)) != 0 || player.y < 0;
+
+		if (fakeWallCheck && fakeWalls.alpha > 0)
+			fakeWalls.alpha -= .1;
+		if (!fakeWallCheck && fakeWalls.alpha < 1)
+			fakeWalls.alpha += .1;
+
+		uiStrawCount.text = 'x $POINTS';
 
 		if (player.alive)
 			playerInteraction();
 		else if (!fade.hasFadeOut)
+		{
+			if (BSIDE)
+				LEVEL--;
+			else
+				LEVEL++;
 			FlxG.resetState();
+		}
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			System.exit(0);
+
+		if (FlxG.keys.justPressed.F)
+			FlxG.fullscreen = !FlxG.fullscreen;
+
+		#if FLX_DEBUG
+		if (FlxG.keys.justPressed.L)
+		{
+			if (BSIDE)
+				LEVEL--;
+			else
+				LEVEL++;
+			FlxG.resetState();
+		}
+		#end
 	}
 }

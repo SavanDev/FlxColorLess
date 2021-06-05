@@ -3,6 +3,7 @@ package objects;
 import flixel.FlxSprite;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxGlitchEffect;
+import misc.Paths;
 
 class Artefact extends FlxEffectSprite
 {

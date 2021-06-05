@@ -9,11 +9,13 @@ import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxGlitchEffect;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.system.System;
-import openfl.geom.Matrix;
+import misc.FadeBoy;
+import misc.Input;
+import misc.Paths;
+import objects.Player;
 
 class CutsceneState extends FlxState
 {
@@ -65,6 +67,12 @@ class CutsceneState extends FlxState
 			}
 		}, "Entities");
 
+		screenEffect = new FlxSprite().makeGraphic(FlxG.width, 12 * 11, FlxColor.TRANSPARENT);
+		var glitchEffect = new FlxGlitchEffect(4);
+		var glitchSprite = new FlxEffectSprite(screenEffect, [glitchEffect]);
+		glitchSprite.visible = false;
+		add(glitchSprite);
+
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
 		screen.alpha = .25;
 		add(screen);
@@ -72,36 +80,24 @@ class CutsceneState extends FlxState
 		fade = new FadeBoy();
 		add(fade);
 
-		var uiBorder = new FlxSprite(0, 132);
+		var uiBorder = new FlxSprite(0, Game.getGameHeight());
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
 		add(uiBorder);
 
-		uiText = new FlxText(5, 132 + 5, FlxG.width - 10, "Press ENTER to start!");
-		uiText.alignment = CENTER;
+		uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, "Press ENTER to start!");
+		uiText.alignment = RIGHT;
 		add(uiText);
 
-		/*screenEffect = new FlxSprite().makeGraphic(FlxG.width, 12 * 11, FlxColor.TRANSPARENT);
-			var glitchEffect = new FlxGlitchEffect(4);
-			var glitchSprite = new FlxEffectSprite(screenEffect, [glitchEffect]);
-			glitchSprite.setColorTransform(1, 0, 0, 1);
-			glitchSprite.visible = false;
-			add(glitchSprite);
-
-			glitchTimer = new FlxTimer().start(5, (_) ->
+		glitchTimer = new FlxTimer().start(4, (_) ->
+		{
+			new FlxTimer().start(.5, (_) ->
 			{
-				new FlxTimer().start(.5, (_) ->
-				{
-					screenEffect.drawFrame();
-					var screenPixels = screenEffect.framePixels;
-					screenPixels.draw(FlxG.camera.canvas, new Matrix(1, 0, 0, 1, 0, 0));
-					glitchSprite.visible = !glitchSprite.visible;
-
-					if (glitchSprite.visible)
-						bgColor = FlxColor.RED;
-					else
-						bgColor = 0xff0163c6;
-				}, 2);
-		}, 0);*/
+				screenEffect.drawFrame(true);
+				var screenPixels = screenEffect.framePixels;
+				screenPixels.draw(FlxG.camera.canvas);
+				glitchSprite.visible = !glitchSprite.visible;
+			}, 2);
+		}, 0);
 	}
 
 	function cutsceneCallback(name:String)
@@ -130,8 +126,14 @@ class CutsceneState extends FlxState
 
 		if (FlxG.keys.justPressed.ENTER && !startGame)
 		{
-			FlxTween.num(1, 0, (v:Float) -> uiText.alpha = v);
-			// glitchTimer.cancel();
+			new FlxTimer().start(.2, (_) ->
+			{
+				if (uiText.alpha > 0)
+					uiText.alpha -= .1;
+				else
+					_.cancel();
+			}, 0);
+			glitchTimer.cancel();
 			playerCutscene.animation.play("state1");
 			startGame = true;
 		}
@@ -147,5 +149,8 @@ class CutsceneState extends FlxState
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			System.exit(0);
+
+		if (FlxG.keys.justPressed.F)
+			FlxG.fullscreen = !FlxG.fullscreen;
 	}
 }

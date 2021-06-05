@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
 import flixel.system.FlxAssets.FlxShader;
+import misc.Input;
 import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.display.StageQuality;
@@ -24,7 +25,6 @@ class Main extends Sprite
 		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
 		FlxG.game.stage.quality = StageQuality.LOW;
 		FlxG.resizeWindow(_width, _height);
-		FlxG.fixedTimestep = false;
 
 		// Center window on screen
 		var screenWidth = Capabilities.screenResolutionX;

@@ -1,3 +1,5 @@
+package misc;
+
 import flixel.graphics.frames.FlxBitmapFont;
 import lime.utils.Assets;
 

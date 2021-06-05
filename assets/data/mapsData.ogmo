@@ -27,6 +27,15 @@
       "defaultTileset": "DefaultTile"
     },
     {
+      "definition": "tile",
+      "name": "FakeFloor",
+      "gridSize": {"x": 12, "y": 12},
+      "exportID": "84953096",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "DefaultTile"
+    },
+    {
       "definition": "entity",
       "name": "Entities",
       "gridSize": {"x": 12, "y": 12},
