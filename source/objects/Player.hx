@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import misc.Input;
@@ -9,6 +10,7 @@ import states.PlayState;
 class Player extends FlxSprite
 {
 	public static inline var SPEED:Float = 75;
+	public static var HAS_GUN:Bool = false;
 	static inline var GRAVITY:Float = 300;
 	static inline var JUMP_POWER:Float = 100;
 
@@ -24,7 +26,9 @@ class Player extends FlxSprite
 		setFacingFlip(FlxObject.LEFT, true, false);
 		setFacingFlip(FlxObject.RIGHT, false, false);
 		animation.add("default", [0, 1], 3, true);
+		animation.add("default-gun", [8, 9], 3, true);
 		animation.add("walk", [5, 6, 5, 7], 5, true);
+		animation.add("walk-gun", [2, 3, 2, 4], 5, true);
 		animation.add("jump", [12]);
 		animation.play("default");
 
@@ -57,8 +61,8 @@ class Player extends FlxSprite
 		if (jumping && !jump)
 			jumping = false;
 
-		/*if (jump && jumpTimer == -1 && isTouching(FlxObject.DOWN))
-			FlxG.sound.play(Paths.getSound("jump")); */
+		if (jump && jumpTimer == -1 && isTouching(FlxObject.DOWN))
+			FlxG.sound.play(Paths.getSound("Jump"));
 
 		// reinicia el tiempo de salto al tocar el suelo
 		if (isTouching(FlxObject.DOWN) && !jumping)
@@ -84,9 +88,9 @@ class Player extends FlxSprite
 		else
 		{
 			if (velocity.x != 0)
-				animation.play("walk");
+				animation.play(HAS_GUN ? "walk-gun" : "walk");
 			else
-				animation.play("default");
+				animation.play(HAS_GUN ? "default-gun" : "default");
 		}
 	}
 

@@ -85,7 +85,7 @@ class CutsceneState extends FlxState
 		add(uiBorder);
 
 		uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, "Press ENTER to start!");
-		uiText.alignment = RIGHT;
+		uiText.alignment = CENTER;
 		add(uiText);
 
 		glitchTimer = new FlxTimer().start(4, (_) ->
@@ -133,6 +133,7 @@ class CutsceneState extends FlxState
 				else
 					_.cancel();
 			}, 0);
+			// FlxG.sound.play(Paths.getSound("Select"));
 			glitchTimer.cancel();
 			playerCutscene.animation.play("state1");
 			startGame = true;
@@ -145,7 +146,10 @@ class CutsceneState extends FlxState
 		}
 
 		if (!playerCutscene.alive && !fade.hasFadeOut)
+		{
+			FlxG.sound.playMusic(Paths.getMusic("night-chip"));
 			FlxG.switchState(new states.PlayState());
+		}
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			System.exit(0);

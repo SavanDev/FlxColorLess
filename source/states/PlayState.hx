@@ -20,6 +20,7 @@ import misc.FadeBoy;
 import misc.Input;
 import misc.Paths;
 import objects.Artefact;
+import objects.Bullet;
 import objects.Player;
 import objects.Spike;
 import objects.Strawberry;
@@ -27,7 +28,7 @@ import objects.Strawberry;
 class PlayState extends FlxState
 {
 	static var LEVEL:Int = 1;
-	static var POINTS:Int = 0;
+	public static var POINTS:Int = 0;
 	public static var BSIDE:Bool = false;
 
 	var player:Player;
@@ -37,6 +38,8 @@ class PlayState extends FlxState
 	var finishPlayer:FlxSprite;
 	var walls:FlxTilemap;
 	var fakeWalls:FlxTilemap;
+	var gun:FlxSprite;
+	var bullet:Bullet;
 
 	var finish:Bool = false;
 	var respawn:Bool = false;
@@ -94,6 +97,13 @@ class PlayState extends FlxState
 					finishPlayer = new FlxSprite(entity.x, entity.y).loadGraphic(Paths.getImage("Bplayer"), true, 12, 24);
 					finishPlayer.animation.frameIndex = 11;
 					add(finishPlayer);
+				case "Gun":
+					if (POINTS >= 6)
+					{
+						gun = new FlxSprite(entity.x, entity.y, Paths.getImage("BGun"));
+						FlxTween.num(entity.y, entity.y + 3, .5, {type: PINGPONG}, (v:Float) -> gun.y = v);
+						add(gun);
+					}
 			}
 		}
 	}
@@ -185,6 +195,12 @@ class PlayState extends FlxState
 				new FlxTimer().start(.1, (_) -> cursed.alpha = Math.max(0, .5 - (player.x / FlxG.width)), 0);
 			}
 		}
+
+		if ((LEVEL == 6 && !BSIDE) || LEVEL == 0)
+			FlxG.sound.music.stop();
+
+		bullet = new Bullet(player);
+		add(bullet);
 	}
 
 	function playerInteraction()
@@ -224,6 +240,7 @@ class PlayState extends FlxState
 		{
 			respawn = true;
 			FlxG.camera.shake(.01, .25);
+			FlxG.sound.play(Paths.getSound("Hurt"));
 			new FlxTimer().start(1, (_) ->
 			{
 				player.setPosition(initPos.x, initPos.y);
@@ -244,6 +261,7 @@ class PlayState extends FlxState
 			{
 				player.kill();
 				FlxFlicker.flicker(player);
+				FlxG.sound.play(Paths.getSound("Hurt"));
 				new FlxTimer().start(1, (_) ->
 				{
 					player.setPosition(initPos.x, initPos.y);
@@ -254,22 +272,37 @@ class PlayState extends FlxState
 		});
 		FlxG.overlap(player, strawberry, (_player:Player, _strawberry:Strawberry) ->
 		{
+			FlxG.sound.play(Paths.getSound("Pickup"));
 			_strawberry.kill();
 			POINTS++;
 		});
+		if (gun != null)
+			FlxG.overlap(player, gun, (d1, _gun:FlxSprite) ->
+			{
+				if (_gun.alive)
+				{
+					FlxG.sound.play(Paths.getSound("Select"));
+					Player.HAS_GUN = true;
+					gun.kill();
+				}
+			});
 		if (artefact != null)
 			FlxG.overlap(player, artefact, (_player:Player, _artefact:Artefact) ->
 			{
+				FlxG.sound.play(Paths.getSound("Artefact"));
 				artefact.kill();
 				player.kill();
 				FlxG.camera.fade(FlxColor.WHITE, 2, () ->
 				{
 					BSIDE = true;
+					FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside"));
 					FlxG.resetState();
 				});
 			});
 		if (finishPlayer != null)
 			FlxG.overlap(player, finishPlayer, (d1, d2) -> FlxG.switchState(new EndingState()));
+
+		FlxG.overlap(bullet, finishPlayer, (d1, d2) -> FlxG.switchState(new EndingState(1)));
 
 		var playerX = player.x + (player.width / 2);
 		var playerY = player.y + (player.height / 2);
@@ -299,6 +332,9 @@ class PlayState extends FlxState
 
 		if (FlxG.keys.justPressed.F)
 			FlxG.fullscreen = !FlxG.fullscreen;
+
+		if (Player.HAS_GUN && FlxG.keys.justPressed.CONTROL)
+			bullet.shoot();
 
 		#if FLX_DEBUG
 		if (FlxG.keys.justPressed.L)
