@@ -20,7 +20,7 @@ class Player extends FlxSprite
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(Paths.getImage(!PlayState.BSIDE ? "player" : "Bplayer"), true, 12, 24);
+		loadGraphic(Paths.getImage(!PlayState.BSIDE ? "player" : "Bplayer", PlayState.BSIDE ? true : false), true, 12, 24);
 		acceleration.y = 300;
 
 		setFacingFlip(FlxObject.LEFT, true, false);

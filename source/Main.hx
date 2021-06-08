@@ -20,7 +20,7 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		addChild(new FlxGame(0, 0, _initialState));
+		addChild(new FlxGame(0, 0, _initialState, true));
 		Input.init();
 		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
 		FlxG.game.stage.quality = StageQuality.LOW;

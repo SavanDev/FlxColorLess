@@ -35,7 +35,6 @@ class CutsceneState extends FlxState
 	override public function create()
 	{
 		super.create();
-		Input.init();
 		bgColor = 0xff0163c6;
 		FlxG.timeScale = 1.03;
 
@@ -123,8 +122,9 @@ class CutsceneState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		Input.update();
 
-		if (FlxG.keys.justPressed.ENTER && !startGame)
+		if ((Input.SELECT || Input.SELECT_ALT) && !startGame)
 		{
 			new FlxTimer().start(.2, (_) ->
 			{
@@ -151,7 +151,7 @@ class CutsceneState extends FlxState
 			FlxG.switchState(new states.PlayState());
 		}
 
-		if (FlxG.keys.justPressed.ESCAPE)
+		if (Input.BACK || Input.BACK_ALT)
 			System.exit(0);
 
 		if (FlxG.keys.justPressed.F)

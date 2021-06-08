@@ -4,7 +4,7 @@
 
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="ColorLess" file="ColorLess" main="Main" version="0.0.1" company="SavanDev" />
+	<app title="COLORLESS" file="ColorLess" main="Main" version="1.0.0" company="SavanDev" />
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -16,7 +16,7 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="192" height="156" fps="60" background="#000000" hardware="true" vsync="false" />
+	<window width="192" height="156" fps="60" background="#000000" hardware="true" vsync="true" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="false" />
@@ -32,6 +32,7 @@
 	<set name="BUILD_DIR" value="export" />
 	<source path="source" />
 	<assets path="assets" />
+	<assets path="secret" embed="true"/>
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
@@ -81,4 +82,10 @@
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+	<icon path="misc/icon/icon16.png" size='16'/>
+	<icon path="misc/icon/icon32.png" size='32'/>
+	<icon path="misc/icon/icon64.png" size='64'/>
+	<icon path="misc/icon/icon256.png"/>
+
+	<assets path="misc/readme.txt" rename="readme.txt" />
 </project>

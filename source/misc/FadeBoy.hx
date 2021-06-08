@@ -7,6 +7,8 @@ class FadeBoy extends FlxSprite
 {
 	public var hasFadeIn(get, null):Bool;
 	public var hasFadeOut(get, null):Bool;
+	public var callbackOut:Void->Void;
+	public var callbackIn:Void->Void;
 
 	public function new(_color:FlxColor = FlxColor.BLACK, fadeIn:Bool = true)
 	{
@@ -15,6 +17,14 @@ class FadeBoy extends FlxSprite
 		animation.add("fadeIn", [0, 1, 2, 3, 4], 5, false);
 		animation.add("fadeOut", [4, 3, 2, 1, 0], 5, false);
 
+		animation.finishCallback = (name:String) ->
+		{
+			if (name == "fadeOut" && callbackOut != null)
+				callbackOut();
+			else if (callbackIn != null)
+				callbackIn();
+		}
+
 		if (fadeIn)
 			animation.play("fadeIn");
 		else
@@ -22,13 +32,19 @@ class FadeBoy extends FlxSprite
 		color = _color;
 	}
 
-	public function fadeIn()
+	public function fadeIn(?_color:FlxColor)
 	{
+		if (_color != null)
+			color = _color;
+
 		animation.play("fadeIn");
 	}
 
-	public function fadeOut()
+	public function fadeOut(?_color:FlxColor)
 	{
+		if (_color != null)
+			color = _color;
+
 		animation.play("fadeOut");
 	}
 

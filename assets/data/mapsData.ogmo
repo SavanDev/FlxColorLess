@@ -19,6 +19,15 @@
   "layers": [
     {
       "definition": "tile",
+      "name": "TutoLayer",
+      "gridSize": {"x": 12, "y": 12},
+      "exportID": "12402453",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "Tuto"
+    },
+    {
+      "definition": "tile",
       "name": "Default",
       "gridSize": {"x": 12, "y": 12},
       "exportID": "84201617",
@@ -345,6 +354,7 @@
   ],
   "tilesets": [
     {"label": "DefaultTile", "path": "../images/tileMap.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAAQdJREFUaIHtmV0OhCAMhIvxQutN9kx7P67kPphNDDEM3ZbfzJf4QESLhU4YDKLkfcqpfWZmtt4DGB0mCMAEAVwSdBzX1apdezx3QnnYi1SkNQP3IMb8fet40vezxADmBKEZ9aQk1r1PjPp2irnERNqVWcvJ+GFeQS01qLXeiVCDIMtpkDf77N6qdtlRgwDUIAA1CLCJ+HuhlQifl06k01ns7cWGF+nV2axeZWQN0nqxJ/anwKg9G5bvWXofVNIf9aEGAZbeB2nPj57Yc0tsdu3xILuCPGrYE2rQgGQT5FHDnvTQoKIVNLsXs3hLejEANQjg6sX++Q9ljV+bwDPpPCwxABMEYIIAX4wOlibYLxCmAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0},
-    {"label": "BackTile", "path": "../images/environment.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAAZpJREFUaIHtmk1uwjAUhMehXSBFbIuyiTgeh+gqh+B4FZuo3VZILCowC2P86jqpDTb+kT8pws+EJB6NRyEOMIBjAAcAqzbFZp8ioAOzadv8thCaW6uKNEPi4mw78G2njh26przkIM7+oNoAELLejWD0/A3eSYdNm2KzzwNIcY4nse0PYgtZ607KKoOOJ+DrJ1xtQgmUoJN2I1jfAsuFqL/PwEpdsdd6uQD6VpyTXkOTg3Mkq0YMKlRtIpsMAsI6qIgMiuMgSYJOSiGDvE8L3zxrmmUp0DMzCDCLRL5OnxgZlLSDgN8uinMflBHVQRo1gxypDjJQM8iB6iCNmkGOVAcZqBnkQDIO4pxzAGCMRXVYkhkkxdHbc4wAl5vN/vcS3UE3QT6u3RtRzjnJJErnMduyzqAzwNda3/ra/8hxp4juIODvtJpzDxXiE0IcSePBRUlmEBXkv5CmIvgWx8Tbq3r8GqI2YR7IAO7ybJk6ybc4dOm5b8VnyFrPoGlcVycCrmbEfHlhGpcBF/3ylIl7BluoSH7/agRYXY3NBZ6EpBhmHBDXAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+    {"label": "BackTile", "path": "../images/environment.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAkCAYAAAAq23xmAAAAAXNSR0IArs4c6QAAAZpJREFUaIHtmk1uwjAUhMehXSBFbIuyiTgeh+gqh+B4FZuo3VZILCowC2P86jqpDTb+kT8pws+EJB6NRyEOMIBjAAcAqzbFZp8ioAOzadv8thCaW6uKNEPi4mw78G2njh26przkIM7+oNoAELLejWD0/A3eSYdNm2KzzwNIcY4nse0PYgtZ607KKoOOJ+DrJ1xtQgmUoJN2I1jfAsuFqL/PwEpdsdd6uQD6VpyTXkOTg3Mkq0YMKlRtIpsMAsI6qIgMiuMgSYJOSiGDvE8L3zxrmmUp0DMzCDCLRL5OnxgZlLSDgN8uinMflBHVQRo1gxypDjJQM8iB6iCNmkGOVAcZqBnkQDIO4pxzAGCMRXVYkhkkxdHbc4wAl5vN/vcS3UE3QT6u3RtRzjnJJErnMduyzqAzwNda3/ra/8hxp4juIODvtJpzDxXiE0IcSePBRUlmEBXkv5CmIvgWx8Tbq3r8GqI2YR7IAO7ybJk6ybc4dOm5b8VnyFrPoGlcVycCrmbEfHlhGpcBF/3ylIl7BluoSH7/agRYXY3NBZ6EpBhmHBDXAAAAAElFTkSuQmCC", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0},
+    {"label": "Tuto", "path": "../images/tuto.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAALpJREFUSInVVkkOxCAMi0fz/y97Dm1GkEIW1CLVl4LiLIYUgByg5IAdfJIpPgCgwJeDLvIkn6RAHQOQ5MdLXEHFB0DI5wkdW5uOLwI0sCbxEllORkTLifgAMBMxFLCy8l6BGVtGhH5HIjoB2V714MUg2dntPBm/c7i0kNo1eKag1udOaLHt6tsf/DsrbCHZQolz2ELbeTeW84yOCrC9+hRfedFR+t8RyV8yW1DdyeE98CZseRpU+ZWnxA9Z1owItQeziAAAAABJRU5ErkJggg==", "tileWidth": 12, "tileHeight": 12, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
   ]
 }

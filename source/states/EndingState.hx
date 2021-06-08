@@ -30,7 +30,7 @@ class EndingState extends FlxState
 
 		if (ending == 0)
 		{
-			var animEnding = new FlxSprite().loadGraphic(Paths.getImage("AnimEnding"), true, 96, 72);
+			var animEnding = new FlxSprite().loadGraphic(Paths.getImage("AnimEnding", true), true, 96, 72);
 			animEnding.animation.add("upHead", [0, 1, 2, 3], .5, false);
 			animEnding.animation.add("smile", [4, 5, 6, 7, 8], 8, false);
 			animEnding.animation.add("attack", [9, 10], 8, false);
@@ -51,14 +51,9 @@ class EndingState extends FlxState
 					uiText.text = "Don't give up!";
 					new FlxTimer().start(3, (_) ->
 					{
-						if (PlayState.POINTS < 6)
-						{
-							uiText.color = FlxColor.RED;
-							uiText.text = "Maybe... collecting 6 strawberries?";
-							new FlxTimer().start(3, (_) -> System.exit(0));
-						}
-						else
-							System.exit(0);
+						uiText.color = FlxColor.RED;
+						uiText.text = PlayState.POINTS < 6 ? "Maybe... collecting 6 strawberries?" : "Next time... SHOOT HIM!";
+						new FlxTimer().start(3, (_) -> System.exit(0));
 					});
 					animEnding.kill();
 				}
@@ -67,7 +62,7 @@ class EndingState extends FlxState
 		else
 		{
 			FlxG.sound.play(Paths.getSound("Hit"));
-			var animEnding = new FlxSprite().loadGraphic(Paths.getImage("AnimEnding2"), true, 96, 72);
+			var animEnding = new FlxSprite().loadGraphic(Paths.getImage("AnimEnding2", true), true, 96, 72);
 			animEnding.animation.add("bloodDown", [1, 2, 3, 4], 1, false);
 			animEnding.animation.add("bloody", [5, 6, 7, 8, 9, 10], 2, false);
 			animEnding.setGraphicSize(96 * 2, 72 * 2);

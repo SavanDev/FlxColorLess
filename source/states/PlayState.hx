@@ -1,5 +1,6 @@
 package states;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -24,6 +25,7 @@ import objects.Bullet;
 import objects.Player;
 import objects.Spike;
 import objects.Strawberry;
+import openfl.Lib;
 
 class PlayState extends FlxState
 {
@@ -40,6 +42,7 @@ class PlayState extends FlxState
 	var fakeWalls:FlxTilemap;
 	var gun:FlxSprite;
 	var bullet:Bullet;
+	var hasGun:Void->Void;
 
 	var finish:Bool = false;
 	var respawn:Bool = false;
@@ -94,13 +97,13 @@ class PlayState extends FlxState
 					player.setPosition(entity.x, entity.y);
 					initPos.set(entity.x, entity.y);
 				case "FinishEvent":
-					finishPlayer = new FlxSprite(entity.x, entity.y).loadGraphic(Paths.getImage("Bplayer"), true, 12, 24);
+					finishPlayer = new FlxSprite(entity.x, entity.y).loadGraphic(Paths.getImage("Bplayer", true), true, 12, 24);
 					finishPlayer.animation.frameIndex = 11;
 					add(finishPlayer);
 				case "Gun":
 					if (POINTS >= 6)
 					{
-						gun = new FlxSprite(entity.x, entity.y, Paths.getImage("BGun"));
+						gun = new FlxSprite(entity.x, entity.y, Paths.getImage("BGun", true));
 						FlxTween.num(entity.y, entity.y + 3, .5, {type: PINGPONG}, (v:Float) -> gun.y = v);
 						add(gun);
 					}
@@ -114,6 +117,8 @@ class PlayState extends FlxState
 		bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 
 		var glitchedEffect = new FlxGlitchEffect(2);
+		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
+		uiCamera.bgColor = FlxColor.TRANSPARENT;
 
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level$LEVEL.json');
 		initPos = new FlxPoint();
@@ -124,10 +129,15 @@ class PlayState extends FlxState
 			add(backWalls);
 		}
 
-		walls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap"), "Default");
+		walls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "Default");
 		walls.setTileProperties(0, FlxObject.NONE);
 		walls.setTileProperties(1, FlxObject.ANY);
 		add(walls);
+
+		var tutoLayer = map.loadTilemap(Paths.getImage("tuto", true), "TutoLayer");
+		FlxTween.num(tutoLayer.y, tutoLayer.y + 3, 1, {type: PINGPONG}, (v:Float) -> tutoLayer.y = v);
+		if (!BSIDE)
+			add(tutoLayer);
 
 		if (!BSIDE)
 		{
@@ -140,7 +150,7 @@ class PlayState extends FlxState
 
 		map.loadEntities(placeEntities, "Entities");
 
-		fakeWalls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap"), "FakeFloor");
+		fakeWalls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "FakeFloor");
 		add(fakeWalls);
 
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
@@ -165,6 +175,7 @@ class PlayState extends FlxState
 		{
 			var uiStrawGlitched = new FlxEffectSprite(uiStrawberry, [glitchedEffect]);
 			uiStrawGlitched.setPosition(5, Game.getGameHeight() + 5);
+			uiStrawGlitched.cameras = [uiCamera];
 			add(uiStrawGlitched);
 		}
 
@@ -173,7 +184,7 @@ class PlayState extends FlxState
 
 		if (BSIDE)
 		{
-			var spriteCursed = new FlxSprite().loadGraphic(Paths.getImage("cursed"));
+			var spriteCursed = new FlxSprite().loadGraphic(Paths.getImage("cursed", true));
 			var cursed = new FlxEffectSprite(spriteCursed, [glitchedEffect]);
 			cursed.visible = false;
 			add(cursed);
@@ -196,46 +207,70 @@ class PlayState extends FlxState
 			}
 		}
 
+		bullet = new Bullet(player);
+		add(bullet);
+
+		// Eventos específicos
 		if ((LEVEL == 6 && !BSIDE) || LEVEL == 0)
 			FlxG.sound.music.stop();
 
-		bullet = new Bullet(player);
-		add(bullet);
+		if (LEVEL == 6 && BSIDE && POINTS >= 6)
+			Lib.application.window.title = "COLORLESS - It's time";
+
+		if (LEVEL == 0)
+			Lib.application.window.title = "COLORLESS - Shoot it!";
+
+		// Transición al siguiente nivel
+		fade.callbackOut = () ->
+		{
+			if (BSIDE)
+				LEVEL--;
+			else
+				LEVEL++;
+			FlxG.resetState();
+		};
+
+		// Player tiene un arma!
+		hasGun = () ->
+		{
+			Player.HAS_GUN = true;
+			add(tutoLayer);
+		};
+
+		// HUD
+		FlxG.cameras.add(uiCamera, false);
+		uiBorder.cameras = [uiCamera];
+		uiCamera.cameras = [uiCamera];
+		uiStrawberry.cameras = [uiCamera];
+		uiText.cameras = [uiCamera];
+		uiStrawCount.cameras = [uiCamera];
 	}
 
 	function playerInteraction()
 	{
-		if (!BSIDE)
+		// Pasar de nivel por derecha
+		if (player.x > FlxG.width)
 		{
-			if (player.x < 0)
-				player.x = 0;
-
-			if (player.x > FlxG.width)
-			{
-				if (player.y > 0)
-				{
-					player.kill();
-					fade.fadeOut();
-				}
-				else
-					player.x = FlxG.width;
-			}
-		}
-		else
-		{
-			if (player.x > (FlxG.width - player.width))
-				player.x = FlxG.width - player.width;
-
-			if (player.x < -player.width)
-			{
-				player.kill();
-				fade.fadeOut();
-			}
-
-			if (player.x < 0 && LEVEL == 0)
-				player.x = 0;
+			player.kill();
+			fade.fadeOut();
 		}
 
+		// Pasar de nivel por izquierda
+		if (player.x < -player.width)
+		{
+			player.kill();
+			fade.fadeOut();
+		}
+
+		// Pared mágica por izquierda
+		if (player.x < 0 && (LEVEL == 0 || !BSIDE))
+			player.x = 0;
+
+		// Pared mágica por derecha
+		if ((BSIDE || player.y <= 0) && player.x > (FlxG.width - player.width))
+			player.x = FlxG.width - player.width;
+
+		// Te caíste bro
 		if (player.y > FlxG.height && !respawn)
 		{
 			respawn = true;
@@ -282,7 +317,7 @@ class PlayState extends FlxState
 				if (_gun.alive)
 				{
 					FlxG.sound.play(Paths.getSound("Select"));
-					Player.HAS_GUN = true;
+					hasGun();
 					gun.kill();
 				}
 			});
@@ -292,10 +327,11 @@ class PlayState extends FlxState
 				FlxG.sound.play(Paths.getSound("Artefact"));
 				artefact.kill();
 				player.kill();
+				FlxG.camera.shake(.05, 2);
 				FlxG.camera.fade(FlxColor.WHITE, 2, () ->
 				{
 					BSIDE = true;
-					FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside"));
+					FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside", true));
 					FlxG.resetState();
 				});
 			});
@@ -318,25 +354,17 @@ class PlayState extends FlxState
 
 		if (player.alive)
 			playerInteraction();
-		else if (!fade.hasFadeOut)
-		{
-			if (BSIDE)
-				LEVEL--;
-			else
-				LEVEL++;
-			FlxG.resetState();
-		}
 
-		if (FlxG.keys.justPressed.ESCAPE)
+		if (Input.BACK || Input.BACK_ALT)
 			System.exit(0);
 
 		if (FlxG.keys.justPressed.F)
 			FlxG.fullscreen = !FlxG.fullscreen;
 
-		if (Player.HAS_GUN && FlxG.keys.justPressed.CONTROL)
+		if (Player.HAS_GUN && (Input.SHOOT || Input.SHOOT_ALT))
 			bullet.shoot();
 
-		#if FLX_DEBUG
+		#if debug
 		if (FlxG.keys.justPressed.L)
 		{
 			if (BSIDE)
