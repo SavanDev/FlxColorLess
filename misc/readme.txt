@@ -10,5 +10,5 @@ Left/Right Arrow - Move
 Up Arrow - Jump
 
 ---------
-Contains music ©2020 Joshua McLean
+Contains music ©2020 Joshua McLean (https://joshua-mclean.itch.io/)
 Licensed under Creative Commons Attribution 4.0 International https://creativecommons.org/licenses/by/4.0/

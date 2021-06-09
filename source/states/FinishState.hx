@@ -13,6 +13,7 @@ class FinishState extends FlxState
 {
 	var texts:Array<String> = [
 		"Game made by SavanDev",
+		"Created in HaxeFlixel",
 		"Music made by Joshua McLean",
 		"This game was made for\n#MejorandoAndo of May\n\nin 1 week and a half",
 		"Thanks for playing!\n\nPress ESCAPE to exit the game"
