@@ -1,0 +1,19 @@
+@echo off
+cd ..
+echo Building for Windows x64...
+lime build windows -final -clean
+echo Uploading to itch.io...
+butler push .\export\release\windows\bin SavanDev/ColorLess:win64
+echo Building for Windows x86...
+lime build windows -final -clean -32 -Dx86
+echo Uploading to itch.io...
+butler push .\export\x86\windows\bin SavanDev/ColorLess:win32
+echo Building for Linux...
+wsl lime build linux -final -clean -64
+echo Uploading to itch.io...
+butler push .\export\release\linux\bin SavanDev/ColorLess:linux64
+echo Finish!
+butler status SavanDev/ColorLess:win64
+butler status SavanDev/ColorLess:win32
+butler status SavanDev/ColorLess:linux64
+pause
