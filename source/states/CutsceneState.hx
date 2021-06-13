@@ -35,6 +35,8 @@ class CutsceneState extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
+
 		bgColor = 0xff0163c6;
 		FlxG.timeScale = 1.03;
 

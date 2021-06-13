@@ -13,6 +13,7 @@ class SavanLogo extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 		FlxG.camera.zoom = 2;
 
 		var logo = new FlxSprite();

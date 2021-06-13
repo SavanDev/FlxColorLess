@@ -114,11 +114,13 @@ class PlayState extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 		bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 
 		var glitchedEffect = new FlxGlitchEffect(2);
 		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		uiCamera.bgColor = FlxColor.TRANSPARENT;
+		uiCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level$LEVEL.json');
 		initPos = new FlxPoint();
@@ -157,16 +159,12 @@ class PlayState extends FlxState
 		screen.alpha = .25;
 		add(screen);
 
-		fade = new FadeBoy();
+		fade = new FadeBoy(BSIDE && LEVEL == 6 ? FlxColor.WHITE : FlxColor.BLACK);
 		add(fade);
 
 		var uiBorder = new FlxSprite(0, Game.getGameHeight());
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
 		add(uiBorder);
-
-		var uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
-		uiText.alignment = RIGHT;
-		add(uiText);
 
 		var uiStrawberry = new FlxSprite(5, Game.getGameHeight() + 5, Paths.getImage("strawberry"));
 		if (!BSIDE)
@@ -181,6 +179,10 @@ class PlayState extends FlxState
 
 		uiStrawCount = new FlxText(17, Game.getGameHeight() + 5, 0, "x 0");
 		add(uiStrawCount);
+
+		var uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
+		uiText.alignment = RIGHT;
+		add(uiText);
 
 		if (BSIDE)
 		{
@@ -220,7 +222,13 @@ class PlayState extends FlxState
 		if (LEVEL == 0)
 			Lib.application.window.title = "COLORLESS - Shoot it!";
 
-		// Transición al siguiente nivel
+		// Fade Callback
+		fade.callbackIn = () ->
+		{
+			if (LEVEL == 6 && BSIDE)
+				fade.color = FlxColor.BLACK;
+		};
+
 		fade.callbackOut = () ->
 		{
 			if (BSIDE)
@@ -327,16 +335,29 @@ class PlayState extends FlxState
 				FlxG.sound.play(Paths.getSound("Artefact"));
 				artefact.kill();
 				player.kill();
-				FlxG.camera.shake(.05, 2);
-				FlxG.camera.fade(FlxColor.WHITE, 2, () ->
+				FlxG.camera.shake(.05, 3);
+				var fadeTemp = new FlxSprite(0, 0).makeGraphic(Game.TILE_WIDTH * Game.MAP_WIDTH, Game.TILE_HEIGHT * Game.MAP_HEIGHT, FlxColor.WHITE);
+				fadeTemp.alpha = 0;
+				add(fadeTemp);
+				new FlxTimer().start(.5, (_timer:FlxTimer) ->
 				{
-					BSIDE = true;
-					FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside", true));
-					FlxG.resetState();
-				});
+					if (fadeTemp.alpha < 1)
+						fadeTemp.alpha += .2;
+					else
+					{
+						_timer.cancel();
+						BSIDE = true;
+						FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside", true));
+						FlxG.resetState();
+					}
+				}, 0);
 			});
 		if (finishPlayer != null)
-			FlxG.overlap(player, finishPlayer, (d1, d2) -> FlxG.switchState(new EndingState()));
+			FlxG.overlap(player, finishPlayer, (d1, d2) ->
+			{
+				Lib.application.window.title = "COLORLESS";
+				FlxG.switchState(new EndingState());
+			});
 
 		FlxG.overlap(bullet, finishPlayer, (d1, d2) -> FlxG.switchState(new EndingState(1)));
 

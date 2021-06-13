@@ -27,6 +27,7 @@ class EndingState extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
 		if (ending == 0)
 		{

@@ -14,7 +14,7 @@ class FinishState extends FlxState
 	var texts:Array<String> = [
 		"Game made by SavanDev",
 		"Created in HaxeFlixel",
-		"Music made by Joshua McLean",
+		"Music made by\nJoshua McLean",
 		"This game was made for\n#MejorandoAndo of May\n\nin 1 week and a half",
 		"Thanks for playing!\n\nPress ESCAPE to exit the game"
 	];
@@ -23,6 +23,7 @@ class FinishState extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
 		var finishText = new FlxText(0, 0, 150, texts[actualText]);
 		finishText.alignment = CENTER;
