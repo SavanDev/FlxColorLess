@@ -91,5 +91,6 @@
 	<icon path="misc/icon/icon64.png" size='64'/>
 	<icon path="misc/icon/icon256.png"/>
 
-	<assets path="misc/readme.txt" rename="readme.txt" />
+	<assets path="LICENSE" rename="LICENSE.txt" />
+	<assets path="misc/readme.txt" rename="README.txt" />
 </project>
