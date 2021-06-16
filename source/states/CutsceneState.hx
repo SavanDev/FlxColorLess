@@ -122,19 +122,26 @@ class CutsceneState extends BaseState
 		super.update(elapsed);
 		Input.update();
 
-		if ((Input.SELECT || Input.SELECT_ALT) && !startGame)
+		persistentDraw = persistentUpdate = true;
+
+		if (Input.SELECT || Input.SELECT_ALT)
 		{
-			new FlxTimer().start(.2, (_) ->
+			if (!startGame)
 			{
-				if (uiText.alpha > 0)
-					uiText.alpha -= .1;
-				else
-					_.cancel();
-			}, 0);
-			// FlxG.sound.play(Paths.getSound("Select"));
-			glitchTimer.cancel();
-			playerCutscene.animation.play("state1");
-			startGame = true;
+				new FlxTimer().start(.2, (_) ->
+				{
+					if (uiText.alpha > 0)
+						uiText.alpha -= .1;
+					else
+						_.cancel();
+				}, 0);
+				// FlxG.sound.play(Paths.getSound("Select"));
+				glitchTimer.cancel();
+				playerCutscene.animation.play("state1");
+				startGame = true;
+			}
+			else
+				FlxG.switchState(new states.PlayState());
 		}
 
 		if (playerCutscene.alive && !playerCutscene.isOnScreen())

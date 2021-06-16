@@ -53,7 +53,8 @@ class PlayState extends BaseState
 		"Danger!",
 		"The Cave!",
 		"Let's go!",
-		"..."
+		"...",
+		"What?"
 	];
 	var bSideText:Array<String> = [
 		"It's your fault",
@@ -113,6 +114,10 @@ class PlayState extends BaseState
 	override public function create()
 	{
 		super.create();
+
+		if (LEVEL < 0 || LEVEL > 7)
+			LEVEL = 7;
+
 		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 		bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 
@@ -241,6 +246,21 @@ class PlayState extends BaseState
 		uiStrawberry.cameras = [uiCamera];
 		uiText.cameras = [uiCamera];
 		uiStrawCount.cameras = [uiCamera];
+
+		// Hacker time?
+		if (LEVEL == 7)
+		{
+			FlxG.sound.music.stop();
+			var spriteCursed = new FlxSprite().loadGraphic(Paths.getImage("cursedever"));
+			new FlxTimer().start(10, (_) ->
+			{
+				player.kill();
+				add(spriteCursed);
+				uiText.text = "DIRTY HACKER";
+				uiText.color = FlxColor.RED;
+				new FlxTimer().start(2, (_) -> System.exit(0));
+			});
+		}
 	}
 
 	function playerInteraction()
@@ -370,7 +390,7 @@ class PlayState extends BaseState
 		if (player.alive)
 			playerInteraction();
 
-		if (Input.BACK || Input.BACK_ALT)
+		if ((Input.BACK || Input.BACK_ALT) && LEVEL != 7)
 			System.exit(0);
 
 		if (Player.HAS_GUN && (Input.SHOOT || Input.SHOOT_ALT))
@@ -385,6 +405,8 @@ class PlayState extends BaseState
 				LEVEL++;
 			FlxG.resetState();
 		}
+		if (FlxG.keys.justPressed.K)
+			POINTS++;
 		#end
 	}
 }

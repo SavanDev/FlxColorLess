@@ -12,6 +12,7 @@ Controls:
 Left/Right Arrow - Move
 Up Arrow - Jump
 F - Fullscreen
+ENTER - Skip cutscenes
 ---------
 
 Contains music ©2021 Joshua McLean (https://joshua-mclean.itch.io)
