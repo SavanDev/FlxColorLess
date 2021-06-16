@@ -27,7 +27,7 @@ import objects.Spike;
 import objects.Strawberry;
 import openfl.Lib;
 
-class PlayState extends FlxState
+class PlayState extends BaseState
 {
 	static var LEVEL:Int = 1;
 	public static var POINTS:Int = 0;
@@ -65,7 +65,6 @@ class PlayState extends FlxState
 		"...?"
 	];
 
-	var fade:FadeBoy;
 	var initPos:FlxPoint;
 	var uiStrawCount:FlxText;
 
@@ -117,6 +116,8 @@ class PlayState extends FlxState
 		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 		bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 
+		persistentDraw = persistentUpdate = true;
+
 		var glitchedEffect = new FlxGlitchEffect(2);
 		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		uiCamera.bgColor = FlxColor.TRANSPARENT;
@@ -158,9 +159,6 @@ class PlayState extends FlxState
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
 		screen.alpha = .25;
 		add(screen);
-
-		fade = new FadeBoy(BSIDE && LEVEL == 6 ? FlxColor.WHITE : FlxColor.BLACK);
-		add(fade);
 
 		var uiBorder = new FlxSprite(0, Game.getGameHeight());
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
@@ -212,6 +210,13 @@ class PlayState extends FlxState
 		bullet = new Bullet(player);
 		add(bullet);
 
+		// Music
+		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
+			if (!BSIDE)
+				FlxG.sound.playMusic(Paths.getMusic("night-chip"));
+			else
+				FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside", true));
+
 		// Eventos específicos
 		if ((LEVEL == 6 && !BSIDE) || LEVEL == 0)
 			FlxG.sound.music.stop();
@@ -221,22 +226,6 @@ class PlayState extends FlxState
 
 		if (LEVEL == 0)
 			Lib.application.window.title = "COLORLESS - Shoot it!";
-
-		// Fade Callback
-		fade.callbackIn = () ->
-		{
-			if (LEVEL == 6 && BSIDE)
-				fade.color = FlxColor.BLACK;
-		};
-
-		fade.callbackOut = () ->
-		{
-			if (BSIDE)
-				LEVEL--;
-			else
-				LEVEL++;
-			FlxG.resetState();
-		};
 
 		// Player tiene un arma!
 		hasGun = () ->
@@ -256,18 +245,17 @@ class PlayState extends FlxState
 
 	function playerInteraction()
 	{
-		// Pasar de nivel por derecha
-		if (player.x > FlxG.width)
+		// Pasar de nivel por derecha e izquierda
+		if ((player.x > FlxG.width) || (player.x < -player.width))
 		{
 			player.kill();
-			fade.fadeOut();
-		}
-
-		// Pasar de nivel por izquierda
-		if (player.x < -player.width)
-		{
-			player.kill();
-			fade.fadeOut();
+			player.visible = false;
+			BaseState.fadeColor = FlxColor.BLACK;
+			if (BSIDE)
+				LEVEL--;
+			else
+				LEVEL++;
+			FlxG.resetState();
 		}
 
 		// Pared mágica por izquierda
@@ -347,7 +335,8 @@ class PlayState extends FlxState
 					{
 						_timer.cancel();
 						BSIDE = true;
-						FlxG.sound.playMusic(Paths.getMusic("night-chip-Bside", true));
+						BaseState.fadeColor = FlxColor.WHITE;
+						BaseState.skipNextTransOut = true;
 						FlxG.resetState();
 					}
 				}, 0);
@@ -356,10 +345,15 @@ class PlayState extends FlxState
 			FlxG.overlap(player, finishPlayer, (d1, d2) ->
 			{
 				Lib.application.window.title = "COLORLESS";
+				BaseState.skipNextTransOut = BaseState.skipNextTransIn = true;
 				FlxG.switchState(new EndingState());
 			});
 
-		FlxG.overlap(bullet, finishPlayer, (d1, d2) -> FlxG.switchState(new EndingState(1)));
+		FlxG.overlap(bullet, finishPlayer, (d1, d2) ->
+		{
+			BaseState.skipNextTransOut = BaseState.skipNextTransIn = true;
+			FlxG.switchState(new EndingState(1));
+		});
 
 		var playerX = player.x + (player.width / 2);
 		var playerY = player.y + (player.height / 2);
@@ -378,9 +372,6 @@ class PlayState extends FlxState
 
 		if (Input.BACK || Input.BACK_ALT)
 			System.exit(0);
-
-		if (FlxG.keys.justPressed.F)
-			FlxG.fullscreen = !FlxG.fullscreen;
 
 		if (Player.HAS_GUN && (Input.SHOOT || Input.SHOOT_ALT))
 			bullet.shoot();

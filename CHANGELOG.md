@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Better transition after pick the artefact.
 - Some things on README.
+- Reworked the fade system.
 ### Fixed
 - The camera now is pixel-perfect (less visual bugs).
 

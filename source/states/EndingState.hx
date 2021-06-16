@@ -10,7 +10,7 @@ import lime.system.System;
 import misc.FadeBoy;
 import misc.Paths;
 
-class EndingState extends FlxState
+class EndingState extends BaseState
 {
 	var ending:Int;
 	var uiText:FlxText;
@@ -102,13 +102,14 @@ class EndingState extends FlxState
 	{
 		super.update(elapsed);
 
-		if (fadeBoy != null && endingState && !fadeBoy.hasFadeOut && !endingState2)
+		if (fadeBoy != null && endingState && fadeBoy.fadeOutFinished && !endingState2)
 		{
 			endingState2 = true;
 			uiText.text = "You will no longer control me";
 			new FlxTimer().start(3, (_) ->
 			{
 				uiText.text = "Never more";
+				BaseState.fadeColor = FlxColor.WHITE;
 				new FlxTimer().start(3, (_) -> FlxG.switchState(new FinishState()));
 			});
 		}

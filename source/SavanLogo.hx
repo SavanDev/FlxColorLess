@@ -6,10 +6,8 @@ import flixel.util.FlxTimer;
 import misc.FadeBoy;
 import misc.Paths;
 
-class SavanLogo extends FlxState
+class SavanLogo extends BaseState
 {
-	var fade:FadeBoy;
-
 	override public function create()
 	{
 		super.create();
@@ -27,17 +25,6 @@ class SavanLogo extends FlxState
 		logoText.y += 20;
 		add(logoText);
 
-		fade = new FadeBoy();
-		add(fade);
-
-		new FlxTimer().start(3, (_) -> fade.fadeOut());
-	}
-
-	override public function update(elapsed:Float)
-	{
-		super.update(elapsed);
-
-		if (!fade.hasFadeOut)
-			FlxG.switchState(new states.CutsceneState());
+		new FlxTimer().start(3, (_) -> FlxG.switchState(new states.CutsceneState()));
 	}
 }

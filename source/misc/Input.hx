@@ -62,6 +62,9 @@ class Input
 		}
 		else
 			isGamepadConnected = false;
+
+		if (FlxG.keys.justPressed.F)
+			FlxG.fullscreen = !FlxG.fullscreen;
 		#end
 	}
 }

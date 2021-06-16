@@ -5,17 +5,23 @@ import flixel.util.FlxColor;
 
 class FadeBoy extends FlxSprite
 {
-	public var hasFadeIn(get, null):Bool;
-	public var hasFadeOut(get, null):Bool;
-	public var callbackOut:Void->Void;
-	public var callbackIn:Void->Void;
+	public var fadeOutFinished(get, null):Bool;
 
-	public function new(_color:FlxColor = FlxColor.BLACK, fadeIn:Bool = true)
+	private var callbackOut:Void->Void;
+	private var callbackIn:Void->Void;
+
+	public function new(fadeIn:Bool = true, color:FlxColor = FlxColor.BLACK)
 	{
 		super();
 		loadGraphic(Paths.getImage("blackFade"), true, 192, 132);
 		animation.add("fadeIn", [0, 1, 2, 3, 4], 5, false);
 		animation.add("fadeOut", [4, 3, 2, 1, 0], 5, false);
+		this.color = color;
+
+		if (fadeIn)
+			animation.play("fadeIn");
+		else
+			animation.frameIndex = 4;
 
 		animation.finishCallback = (name:String) ->
 		{
@@ -24,37 +30,41 @@ class FadeBoy extends FlxSprite
 			else if (callbackIn != null)
 				callbackIn();
 		}
-
-		if (fadeIn)
-			animation.play("fadeIn");
-		else
-			animation.frameIndex = 4;
-		color = _color;
 	}
 
-	public function fadeIn(?_color:FlxColor)
+	public function fadeIn(?color:FlxColor)
 	{
-		if (_color != null)
-			color = _color;
+		if (color != null)
+			this.color = color;
 
 		animation.play("fadeIn");
 	}
 
-	public function fadeOut(?_color:FlxColor)
+	public function fadeOut(?color:FlxColor)
 	{
-		if (_color != null)
-			color = _color;
+		if (color != null)
+			this.color = color;
 
 		animation.play("fadeOut");
 	}
 
-	function get_hasFadeIn():Bool
+	public function setColor(color:FlxColor)
 	{
-		return animation.finished && animation.name == "fadeIn" ? false : true;
+		this.color = color;
 	}
 
-	function get_hasFadeOut():Bool
+	public function setCallbackOut(callback:Void->Void)
 	{
-		return animation.finished && animation.name == "fadeOut" ? false : true;
+		callbackOut = callback;
+	}
+
+	public function setCallbackIn(callback:Void->Void)
+	{
+		callbackIn = callback;
+	}
+
+	function get_fadeOutFinished():Bool
+	{
+		return animation.finished && animation.name == "fadeOut" ? true : false;
 	}
 }

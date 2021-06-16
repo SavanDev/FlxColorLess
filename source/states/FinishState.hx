@@ -9,7 +9,7 @@ import lime.system.System;
 import misc.FadeBoy;
 import misc.Input;
 
-class FinishState extends FlxState
+class FinishState extends BaseState
 {
 	var texts:Array<String> = [
 		"Game made by SavanDev",
@@ -30,19 +30,23 @@ class FinishState extends FlxState
 		finishText.screenCenter();
 		add(finishText);
 
-		var fadeBoy = new FadeBoy(FlxColor.WHITE);
-		fadeBoy.callbackIn = () ->
+		var fade = new FadeBoy(false);
+		add(fade);
+
+		new FlxTimer().start(3, (_) -> fade.fadeOut(FlxColor.BLACK));
+
+		fade.setCallbackIn(() ->
 		{
 			if (actualText < texts.length - 1)
-				new FlxTimer().start(3, (_) -> fadeBoy.fadeOut(FlxColor.BLACK));
-		};
-		fadeBoy.callbackOut = () ->
+				new FlxTimer().start(3, (_) -> fade.fadeOut(FlxColor.BLACK));
+		});
+		fade.setCallbackOut(() ->
 		{
 			actualText++;
 			finishText.text = texts[actualText];
-			fadeBoy.fadeIn();
-		};
-		add(fadeBoy);
+			finishText.screenCenter();
+			fade.fadeIn();
+		});
 	}
 
 	override public function update(elapsed:Float)

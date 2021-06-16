@@ -17,13 +17,12 @@ import misc.Input;
 import misc.Paths;
 import objects.Player;
 
-class CutsceneState extends FlxState
+class CutsceneState extends BaseState
 {
 	var playerCutscene:FlxSprite;
 
 	var walls:FlxTilemap;
 
-	var fade:FadeBoy;
 	var screenEffect:FlxSprite;
 
 	var uiText:FlxText;
@@ -77,9 +76,6 @@ class CutsceneState extends FlxState
 		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
 		screen.alpha = .25;
 		add(screen);
-
-		fade = new FadeBoy();
-		add(fade);
 
 		var uiBorder = new FlxSprite(0, Game.getGameHeight());
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
@@ -143,20 +139,11 @@ class CutsceneState extends FlxState
 
 		if (playerCutscene.alive && !playerCutscene.isOnScreen())
 		{
-			fade.fadeOut();
 			playerCutscene.kill();
-		}
-
-		if (!playerCutscene.alive && !fade.hasFadeOut)
-		{
-			FlxG.sound.playMusic(Paths.getMusic("night-chip"));
 			FlxG.switchState(new states.PlayState());
 		}
 
 		if (Input.BACK || Input.BACK_ALT)
 			System.exit(0);
-
-		if (FlxG.keys.justPressed.F)
-			FlxG.fullscreen = !FlxG.fullscreen;
 	}
 }
