@@ -15,9 +15,13 @@ import lime.system.System;
 import misc.FadeBoy;
 import misc.Input;
 import misc.Paths;
+import misc.ScanLines;
 import objects.Player;
+import openfl.display.BitmapData;
+import openfl.geom.Matrix;
+import openfl.geom.Rectangle;
 
-class CutsceneState extends BaseState
+class MenuState extends BaseState
 {
 	var playerCutscene:FlxSprite;
 
@@ -73,8 +77,7 @@ class CutsceneState extends BaseState
 		glitchSprite.visible = false;
 		add(glitchSprite);
 
-		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
-		screen.alpha = .25;
+		var screen = new ScanLines();
 		add(screen);
 
 		var uiBorder = new FlxSprite(0, Game.getGameHeight());

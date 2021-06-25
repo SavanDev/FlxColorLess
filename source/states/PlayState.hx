@@ -20,6 +20,7 @@ import lime.system.System;
 import misc.FadeBoy;
 import misc.Input;
 import misc.Paths;
+import misc.ScanLines;
 import objects.Artefact;
 import objects.Bullet;
 import objects.Player;
@@ -161,8 +162,7 @@ class PlayState extends BaseState
 		fakeWalls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "FakeFloor");
 		add(fakeWalls);
 
-		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
-		screen.alpha = .25;
+		var screen = new ScanLines();
 		add(screen);
 
 		var uiBorder = new FlxSprite(0, Game.getGameHeight());

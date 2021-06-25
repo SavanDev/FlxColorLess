@@ -5,6 +5,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import misc.FadeBoy;
 import misc.Paths;
+import states.MenuState;
 
 class SavanLogo extends BaseState
 {
@@ -25,6 +26,6 @@ class SavanLogo extends BaseState
 		logoText.y += 20;
 		add(logoText);
 
-		new FlxTimer().start(3, (_) -> FlxG.switchState(new states.CutsceneState()));
+		new FlxTimer().start(3, (_) -> FlxG.switchState(new MenuState()));
 	}
 }

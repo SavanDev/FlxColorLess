@@ -10,6 +10,7 @@ import lime.system.System;
 import misc.FadeBoy;
 import misc.Input;
 import misc.Paths;
+import misc.ScanLines;
 
 class EndingState extends BaseState
 {
@@ -80,8 +81,7 @@ class EndingState extends BaseState
 			}
 		}
 
-		var screen = new FlxSprite(0, 0, Paths.getImage("screen"));
-		screen.alpha = .25;
+		var screen = new ScanLines();
 		add(screen);
 
 		uiText = new FlxText(5, 132 + 5, FlxG.width - 10);
