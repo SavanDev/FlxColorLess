@@ -1,7 +1,6 @@
 package states;
 
 import flixel.FlxG;
-import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
@@ -15,7 +14,7 @@ class FinishState extends BaseState
 		"Game made by SavanDev",
 		"Created in HaxeFlixel",
 		"Music made by\nJoshua McLean",
-		"This game was made for\n#MejorandoAndo of May\n\nin 1 week and a half",
+		"This game was made for\n#MejorandoAndo of May",
 		"Thanks for playing!\n\nPress ESCAPE to exit the game"
 	];
 	var actualText:Int = 0;

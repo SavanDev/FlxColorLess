@@ -1,5 +1,6 @@
 package states;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -31,6 +32,8 @@ class EndingState extends BaseState
 	override public function create()
 	{
 		super.create();
+		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
+		uiCamera.bgColor = FlxColor.TRANSPARENT;
 		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
 		if (ending == 0)
@@ -81,12 +84,16 @@ class EndingState extends BaseState
 			}
 		}
 
-		var screen = new ScanLines();
+		var screen = new ScanLines(false);
 		add(screen);
 
 		uiText = new FlxText(5, 132 + 5, FlxG.width - 10);
 		uiText.alignment = CENTER;
 		add(uiText);
+
+		FlxG.cameras.add(uiCamera, false);
+		screen.cameras = [uiCamera];
+		uiText.cameras = [uiCamera];
 	}
 
 	function endingFailed()

@@ -4,28 +4,26 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxGlitchEffect;
+import flixel.addons.tile.FlxTilemapExt;
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
-import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.system.System;
-import misc.FadeBoy;
 import misc.Input;
 import misc.Paths;
 import misc.ScanLines;
 import objects.Artefact;
 import objects.Bullet;
+import objects.Heart;
 import objects.Player;
 import objects.Spike;
-import objects.Strawberry;
 import openfl.Lib;
 
 class PlayState extends BaseState
@@ -35,21 +33,22 @@ class PlayState extends BaseState
 	public static var BSIDE:Bool = false;
 
 	var player:Player;
-	var strawberry:Strawberry;
+	var heart:Heart;
 	var spikes:FlxTypedGroup<Spike>;
 	var artefact:Artefact;
 	var finishPlayer:FlxSprite;
-	var walls:FlxTilemap;
-	var fakeWalls:FlxTilemap;
+	var walls:FlxTilemapExt;
+	var fakeWalls:FlxTilemapExt;
 	var gun:FlxSprite;
 	var bullet:Bullet;
 	var hasGun:Void->Void;
+	var messages:Message;
 
 	var finish:Bool = false;
 	var respawn:Bool = false;
 	var levelText:Array<String> = [
 		"Welcome! :)",
-		"Strawberries!",
+		"Hi!",
 		"Jumps!",
 		"Danger!",
 		"The Cave!",
@@ -67,6 +66,14 @@ class PlayState extends BaseState
 		"...?"
 	];
 
+	var trueEndingText:Array<String> = [
+		"You can do it!",
+		"Keep going!",
+		"We are with you!",
+		"Don't listen to him!",
+		"Beat him!"
+	];
+
 	var initPos:FlxPoint;
 	var uiStrawCount:FlxText;
 
@@ -80,9 +87,9 @@ class PlayState extends BaseState
 					player.setPosition(entity.x, entity.y);
 					initPos.set(entity.x, entity.y);
 				case "Strawberry":
-					strawberry = new Strawberry(entity.x, entity.y);
-					FlxTween.num(entity.y, entity.y + 3, .5, {type: PINGPONG}, (v:Float) -> strawberry.y = v);
-					add(strawberry);
+					heart = new Heart(entity.x, entity.y);
+					FlxTween.num(entity.y, entity.y + 3, .5, {type: PINGPONG}, (v:Float) -> heart.y = v);
+					add(heart);
 				case "Spike":
 					spikes.add(new Spike(entity.x + 1, entity.y - 6));
 				case "Artefact":
@@ -138,7 +145,7 @@ class PlayState extends BaseState
 			add(backWalls);
 		}
 
-		walls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "Default");
+		walls = map.loadTilemapExt(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "Default");
 		walls.setTileProperties(0, FlxObject.NONE);
 		walls.setTileProperties(1, FlxObject.ANY);
 		add(walls);
@@ -159,8 +166,11 @@ class PlayState extends BaseState
 
 		map.loadEntities(placeEntities, "Entities");
 
-		fakeWalls = map.loadTilemap(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "FakeFloor");
+		fakeWalls = map.loadTilemapExt(Paths.getImage(!BSIDE ? "tileMap" : "BtileMap", BSIDE ? true : false), "FakeFloor");
 		add(fakeWalls);
+
+		messages = new Message();
+		add(messages);
 
 		var screen = new ScanLines();
 		add(screen);
@@ -169,7 +179,7 @@ class PlayState extends BaseState
 		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
 		add(uiBorder);
 
-		var uiStrawberry = new FlxSprite(5, Game.getGameHeight() + 5, Paths.getImage("strawberry"));
+		var uiStrawberry = new Heart(5, Game.getGameHeight() + 5);
 		if (!BSIDE)
 			add(uiStrawberry);
 		else
@@ -196,14 +206,17 @@ class PlayState extends BaseState
 
 			if (finishPlayer == null)
 			{
-				new FlxTimer().start(5, (_) ->
+				if (POINTS < 6)
 				{
-					new FlxTimer().start(.5, (_) ->
+					new FlxTimer().start(5, (_) ->
 					{
-						uiText.visible = !uiText.visible;
-						cursed.visible = !cursed.visible;
-					}, 2);
-				}, 0);
+						new FlxTimer().start(.5, (_) ->
+						{
+							uiText.visible = !uiText.visible;
+							cursed.visible = !cursed.visible;
+						}, 2);
+					}, 0);
+				}
 			}
 			else
 			{
@@ -229,6 +242,21 @@ class PlayState extends BaseState
 		if (LEVEL == 6 && BSIDE && POINTS >= 6)
 			Lib.application.window.title = "COLORLESS - It's time";
 
+		if (BSIDE && POINTS >= 6)
+		{
+			// No se me ocurre otra forma :|
+			if (LEVEL == 0)
+			{
+				messages.showText("Do it!");
+				messages.callback = () -> messages.showText("Do it!");
+			}
+			else
+			{
+				messages.showArrayText(trueEndingText);
+				messages.callback = () -> messages.showArrayText(trueEndingText);
+			}
+		}
+
 		if (LEVEL == 0)
 			Lib.application.window.title = "COLORLESS - Shoot it!";
 
@@ -246,6 +274,7 @@ class PlayState extends BaseState
 		uiStrawberry.cameras = [uiCamera];
 		uiText.cameras = [uiCamera];
 		uiStrawCount.cameras = [uiCamera];
+		screen.cameras = [uiCamera];
 
 		// Hacker time?
 		if (LEVEL == 7)
@@ -321,11 +350,17 @@ class PlayState extends BaseState
 				});
 			}
 		});
-		FlxG.overlap(player, strawberry, (_player:Player, _strawberry:Strawberry) ->
+		FlxG.overlap(player, heart, (_player:Player, _strawberry:Heart) ->
 		{
-			FlxG.sound.play(Paths.getSound("Pickup"));
-			_strawberry.kill();
-			POINTS++;
+			if (_strawberry.alive)
+			{
+				FlxG.sound.play(Paths.getSound("Pickup"));
+				_strawberry.kill();
+				POINTS++;
+
+				if (POINTS == 6)
+					messages.showText("It's time");
+			}
 		});
 		if (gun != null)
 			FlxG.overlap(player, gun, (d1, _gun:FlxSprite) ->
@@ -364,13 +399,14 @@ class PlayState extends BaseState
 		if (finishPlayer != null)
 			FlxG.overlap(player, finishPlayer, (d1, d2) ->
 			{
-				Lib.application.window.title = "COLORLESS";
+				Lib.application.window.title = "COLORLESS - The End?";
 				BaseState.skipNextTransOut = BaseState.skipNextTransIn = true;
 				FlxG.switchState(new EndingState());
 			});
 
 		FlxG.overlap(bullet, finishPlayer, (d1, d2) ->
 		{
+			Lib.application.window.title = "COLORLESS - The End";
 			BaseState.skipNextTransOut = BaseState.skipNextTransIn = true;
 			FlxG.switchState(new EndingState(1));
 		});

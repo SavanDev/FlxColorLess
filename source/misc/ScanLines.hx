@@ -9,16 +9,19 @@ import openfl.geom.Rectangle;
 // From HaxeFlixel examples xD
 class ScanLines extends FlxSprite
 {
-	public function new(x:Float = 0, y:Float = 0)
+	public function new(lines:Bool = true)
 	{
-		super(x, y);
+		super();
 		var bitmapdata = new BitmapData(Game.getGameWidth(), Game.getGameHeight(), true, FlxColor.TRANSPARENT);
 		var scanline = new BitmapData(Game.getGameWidth(), 1, true, 0x40000000);
 
-		for (i in 0...bitmapdata.height)
+		if (lines)
 		{
-			if (i % 2 == 0)
-				bitmapdata.draw(scanline, new Matrix(1, 0, 0, 1, 0, i));
+			for (i in 0...bitmapdata.height)
+			{
+				if (i % 2 != 0)
+					bitmapdata.draw(scanline, new Matrix(1, 0, 0, 1, 0, i));
+			}
 		}
 
 		// round corners

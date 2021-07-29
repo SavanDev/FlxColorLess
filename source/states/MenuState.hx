@@ -3,7 +3,6 @@ package states;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxGlitchEffect;
@@ -12,14 +11,10 @@ import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.system.System;
-import misc.FadeBoy;
 import misc.Input;
 import misc.Paths;
 import misc.ScanLines;
 import objects.Player;
-import openfl.display.BitmapData;
-import openfl.geom.Matrix;
-import openfl.geom.Rectangle;
 
 class MenuState extends BaseState
 {
@@ -30,6 +25,7 @@ class MenuState extends BaseState
 	var screenEffect:FlxSprite;
 
 	var uiText:FlxText;
+	var uiName:FlxText;
 	var glitchTimer:FlxTimer;
 
 	var startGame:Bool = false;
@@ -76,6 +72,10 @@ class MenuState extends BaseState
 		var glitchSprite = new FlxEffectSprite(screenEffect, [glitchEffect]);
 		glitchSprite.visible = false;
 		add(glitchSprite);
+
+		uiName = new FlxText(0, 30, "COLORLESS", 16);
+		uiName.screenCenter(X);
+		add(uiName);
 
 		var screen = new ScanLines();
 		add(screen);
@@ -134,7 +134,10 @@ class MenuState extends BaseState
 				new FlxTimer().start(.2, (_) ->
 				{
 					if (uiText.alpha > 0)
+					{
 						uiText.alpha -= .1;
+						uiName.alpha = uiText.alpha;
+					}
 					else
 						_.cancel();
 				}, 0);

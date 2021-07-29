@@ -21,6 +21,8 @@ class Player extends FlxSprite
 	{
 		super(x, y);
 		loadGraphic(Paths.getImage(!PlayState.BSIDE ? "player" : "Bplayer", PlayState.BSIDE ? true : false), true, 12, 24);
+		width = 8;
+		offset.x = 2;
 		acceleration.y = 300;
 
 		setFacingFlip(FlxObject.LEFT, true, false);
