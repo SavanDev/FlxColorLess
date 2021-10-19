@@ -19,6 +19,7 @@ import lime.system.System;
 import misc.Input;
 import misc.Paths;
 import misc.ScanLines;
+import mobile.AndroidPad;
 import objects.Artefact;
 import objects.Bullet;
 import objects.Heart;
@@ -123,13 +124,13 @@ class PlayState extends BaseState
 	{
 		super.create();
 
-		if (LEVEL < 0 || LEVEL > 7)
-			LEVEL = 7;
+		if (LEVEL < 0 || LEVEL > 6)
+			LEVEL = 1;
 
-		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
-		bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
-
-		persistentDraw = persistentUpdate = true;
+		var gameCamera = new FlxCamera(24, 0, Game.getGameWidth(), Game.getGameHeight());
+		gameCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		gameCamera.bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
+		FlxG.cameras.reset(gameCamera);
 
 		var glitchedEffect = new FlxGlitchEffect(2);
 		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
@@ -173,6 +174,7 @@ class PlayState extends BaseState
 		add(messages);
 
 		var screen = new ScanLines();
+		screen.x = FlxG.camera.x;
 		add(screen);
 
 		var uiBorder = new FlxSprite(0, Game.getGameHeight());
@@ -267,6 +269,9 @@ class PlayState extends BaseState
 			add(tutoLayer);
 		};
 
+		var pad = new AndroidPad();
+		add(pad);
+
 		// HUD
 		FlxG.cameras.add(uiCamera, false);
 		uiBorder.cameras = [uiCamera];
@@ -275,21 +280,7 @@ class PlayState extends BaseState
 		uiText.cameras = [uiCamera];
 		uiStrawCount.cameras = [uiCamera];
 		screen.cameras = [uiCamera];
-
-		// Hacker time?
-		if (LEVEL == 7)
-		{
-			FlxG.sound.music.stop();
-			var spriteCursed = new FlxSprite().loadGraphic(Paths.getImage("cursedever"));
-			new FlxTimer().start(10, (_) ->
-			{
-				player.kill();
-				add(spriteCursed);
-				uiText.text = "DIRTY HACKER";
-				uiText.color = FlxColor.RED;
-				new FlxTimer().start(2, (_) -> System.exit(0));
-			});
-		}
+		pad.cameras = [uiCamera];
 	}
 
 	function playerInteraction()
@@ -432,7 +423,7 @@ class PlayState extends BaseState
 		if (Player.HAS_GUN && (Input.SHOOT || Input.SHOOT_ALT))
 			bullet.shoot();
 
-		#if debug
+		#if (debug && desktop)
 		if (FlxG.keys.justPressed.L)
 		{
 			if (BSIDE)

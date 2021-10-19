@@ -1,5 +1,6 @@
 package states;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -34,10 +35,11 @@ class MenuState extends BaseState
 	override public function create()
 	{
 		super.create();
-		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
-		bgColor = 0xff0163c6;
-		FlxG.timeScale = 1.03;
+		var gameCamera = new FlxCamera(24, 0, Game.getGameWidth(), Game.getGameHeight());
+		gameCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		gameCamera.bgColor = 0xff0163c6;
+		FlxG.cameras.reset(gameCamera);
 
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level0.json');
 

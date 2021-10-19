@@ -1,9 +1,7 @@
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
-import misc.FadeBoy;
 import misc.Paths;
 import states.MenuState;
 
