@@ -127,15 +127,14 @@ class PlayState extends BaseState
 		if (LEVEL < 0 || LEVEL > 6)
 			LEVEL = 1;
 
-		var gameCamera = new FlxCamera(24, 0, Game.getGameWidth(), Game.getGameHeight());
-		gameCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		var gameCamera = new FlxCamera(Game.GAME_X, 0, Game.getGameWidth(), Game.getGameHeight());
 		gameCamera.bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 		FlxG.cameras.reset(gameCamera);
 
-		var glitchedEffect = new FlxGlitchEffect(2);
 		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		uiCamera.bgColor = FlxColor.TRANSPARENT;
-		uiCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+
+		persistentDraw = persistentUpdate = true;
 
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level$LEVEL.json');
 		initPos = new FlxPoint();
@@ -151,10 +150,12 @@ class PlayState extends BaseState
 		walls.setTileProperties(1, FlxObject.ANY);
 		add(walls);
 
+		#if !mobile
 		var tutoLayer = map.loadTilemap(Paths.getImage("tuto", true), "TutoLayer");
 		FlxTween.num(tutoLayer.y, tutoLayer.y + 3, 1, {type: PINGPONG}, (v:Float) -> tutoLayer.y = v);
 		if (!BSIDE)
 			add(tutoLayer);
+		#end
 
 		if (!BSIDE)
 		{
@@ -174,20 +175,20 @@ class PlayState extends BaseState
 		add(messages);
 
 		var screen = new ScanLines();
-		screen.x = FlxG.camera.x;
 		add(screen);
-
-		var uiBorder = new FlxSprite(0, Game.getGameHeight());
-		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
-		add(uiBorder);
 
 		var uiStrawberry = new Heart(5, Game.getGameHeight() + 5);
 		if (!BSIDE)
 			add(uiStrawberry);
 		else
 		{
-			var uiStrawGlitched = new FlxEffectSprite(uiStrawberry, [glitchedEffect]);
+			var glitchedHeart = new FlxGlitchEffect(1);
+			var uiStrawGlitched = new FlxEffectSprite(uiStrawberry, [glitchedHeart]);
+			#if mobile
+			uiStrawGlitched.setPosition(6, 6);
+			#else
 			uiStrawGlitched.setPosition(5, Game.getGameHeight() + 5);
+			#end
 			uiStrawGlitched.cameras = [uiCamera];
 			add(uiStrawGlitched);
 		}
@@ -195,15 +196,25 @@ class PlayState extends BaseState
 		uiStrawCount = new FlxText(17, Game.getGameHeight() + 5, 0, "x 0");
 		add(uiStrawCount);
 
-		var uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
+		var uiText = new FlxText(Game.GAME_X, Game.getGameHeight() + 5, Game.getGameWidth(), !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
 		uiText.alignment = RIGHT;
 		add(uiText);
 
+		#if mobile
+		uiStrawberry.setPosition(6, 6);
+		uiStrawCount.setPosition(2, 20);
+		uiText.alignment = CENTER;
+		uiText.screenCenter(X);
+		#end
+
 		if (BSIDE)
 		{
+			var glitchedCursed = new FlxGlitchEffect(2);
 			var spriteCursed = new FlxSprite().loadGraphic(Paths.getImage("cursed", true));
-			var cursed = new FlxEffectSprite(spriteCursed, [glitchedEffect]);
+			var cursed = new FlxEffectSprite(spriteCursed, [glitchedCursed]);
 			cursed.visible = false;
+			cursed.x = Game.GAME_X;
+			cursed.cameras = [uiCamera];
 			add(cursed);
 
 			if (finishPlayer == null)
@@ -222,6 +233,7 @@ class PlayState extends BaseState
 			}
 			else
 			{
+				cursed.alpha = 0;
 				cursed.visible = true;
 				new FlxTimer().start(.1, (_) -> cursed.alpha = Math.max(0, .5 - (player.x / FlxG.width)), 0);
 			}
@@ -229,6 +241,14 @@ class PlayState extends BaseState
 
 		bullet = new Bullet(player);
 		add(bullet);
+
+		#if mobile
+		// Android controls!
+		var pad = new AndroidPad();
+		pad.cameras = [uiCamera];
+		pad.setCamera(uiCamera);
+		add(pad);
+		#end
 
 		// Music
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
@@ -266,27 +286,27 @@ class PlayState extends BaseState
 		hasGun = () ->
 		{
 			Player.HAS_GUN = true;
+			#if !mobile
 			add(tutoLayer);
+			#else
+			pad.enableShotButton();
+			#end
 		};
-
-		var pad = new AndroidPad();
-		add(pad);
 
 		// HUD
 		FlxG.cameras.add(uiCamera, false);
-		uiBorder.cameras = [uiCamera];
 		uiCamera.cameras = [uiCamera];
 		uiStrawberry.cameras = [uiCamera];
 		uiText.cameras = [uiCamera];
 		uiStrawCount.cameras = [uiCamera];
+
 		screen.cameras = [uiCamera];
-		pad.cameras = [uiCamera];
 	}
 
 	function playerInteraction()
 	{
 		// Pasar de nivel por derecha e izquierda
-		if ((player.x > FlxG.width) || (player.x < -player.width))
+		if ((player.x > Game.getGameWidth()) || (player.x < -player.width))
 		{
 			player.kill();
 			player.visible = false;
@@ -303,8 +323,8 @@ class PlayState extends BaseState
 			player.x = 0;
 
 		// Pared mágica por derecha
-		if ((BSIDE || player.y <= 0) && player.x > (FlxG.width - player.width))
-			player.x = FlxG.width - player.width;
+		if ((BSIDE || player.y <= 0) && player.x > (Game.getGameWidth() - player.width))
+			player.x = Game.getGameWidth() - player.width;
 
 		// Te caíste bro
 		if (player.y > FlxG.height && !respawn)
@@ -417,7 +437,7 @@ class PlayState extends BaseState
 		if (player.alive)
 			playerInteraction();
 
-		if ((Input.BACK || Input.BACK_ALT) && LEVEL != 7)
+		if (Input.BACK || Input.BACK_ALT)
 			System.exit(0);
 
 		if (Player.HAS_GUN && (Input.SHOOT || Input.SHOOT_ALT))

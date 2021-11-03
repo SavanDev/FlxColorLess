@@ -1,5 +1,6 @@
 package mobile;
 
+import flixel.FlxCamera;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.ui.FlxButton;
 import misc.Input;
@@ -10,7 +11,7 @@ class AndroidPad extends FlxTypedGroup<FlxButton>
 	var btnLeft:FlxButton;
 	var btnRight:FlxButton;
 	var btnJump:FlxButton;
-	var btnPunch:FlxButton;
+	var btnShot:FlxButton;
 
 	public function new()
 	{
@@ -33,5 +34,23 @@ class AndroidPad extends FlxTypedGroup<FlxButton>
 		btnJump.onOut.callback = () -> Input.JUMP = false;
 		btnJump.loadGraphic(Paths.getImage("mobile_up", true), true, 24, 24);
 		add(btnJump);
+
+		btnShot = new FlxButton(80, 16);
+		btnShot.onDown.callback = () -> Input.SHOOT = true;
+		btnShot.onOut.callback = () -> Input.SHOOT = false;
+		btnShot.loadGraphic(Paths.getImage("mobile_shot", true), true, 80, 32);
+	}
+
+	public function enableShotButton()
+	{
+		add(btnShot);
+	}
+
+	public function setCamera(_camera:FlxCamera)
+	{
+		btnLeft.cameras = [_camera];
+		btnRight.cameras = [_camera];
+		btnJump.cameras = [_camera];
+		btnShot.cameras = [_camera];
 	}
 }

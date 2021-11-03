@@ -32,9 +32,13 @@ class EndingState extends BaseState
 	override public function create()
 	{
 		super.create();
+		var gameCamera = new FlxCamera(Game.GAME_X, 0, Game.getGameWidth(), Game.getGameHeight());
+		gameCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		FlxG.cameras.reset(gameCamera);
+
 		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
 		uiCamera.bgColor = FlxColor.TRANSPARENT;
-		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		uiCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
 		if (ending == 0)
 		{
@@ -84,7 +88,8 @@ class EndingState extends BaseState
 			}
 		}
 
-		var screen = new ScanLines(false);
+		var screen = new ScanLines();
+		screen.cameras = [uiCamera];
 		add(screen);
 
 		uiText = new FlxText(5, 132 + 5, FlxG.width - 10);
@@ -92,7 +97,6 @@ class EndingState extends BaseState
 		add(uiText);
 
 		FlxG.cameras.add(uiCamera, false);
-		screen.cameras = [uiCamera];
 		uiText.cameras = [uiCamera];
 	}
 
@@ -102,7 +106,7 @@ class EndingState extends BaseState
 		new FlxTimer().start(3, (_) ->
 		{
 			uiText.color = FlxColor.RED;
-			uiText.text = PlayState.POINTS < 6 ? "Maybe... collecting 6 strawberries?" : "Next time... SHOOT HIM!";
+			uiText.text = PlayState.POINTS < 6 ? "Maybe... getting 6 of them?" : "Next time... SHOOT HIM!";
 			new FlxTimer().start(3, (_) -> System.exit(0));
 		});
 		animEnding.kill();

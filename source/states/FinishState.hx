@@ -1,5 +1,6 @@
 package states;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -14,18 +15,23 @@ class FinishState extends BaseState
 		"Game made by SavanDev",
 		"Created in HaxeFlixel",
 		"Music made by\nJoshua McLean",
-		"This game was made for\n#MejorandoAndo of May",
-		"Thanks for playing!\n\nPress ESCAPE to exit the game"
+		"Thanks for playing!\nSee you next time ;)"
 	];
 	var actualText:Int = 0;
 
 	override public function create()
 	{
 		super.create();
-		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		var gameCamera = new FlxCamera(Game.GAME_X, 0, Game.getGameWidth(), Game.getGameHeight());
+		FlxG.cameras.reset(gameCamera);
+
+		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
+		uiCamera.bgColor = FlxColor.TRANSPARENT;
+		FlxG.cameras.add(uiCamera, false);
 
 		var finishText = new FlxText(0, 0, 150, texts[actualText]);
 		finishText.alignment = CENTER;
+		finishText.cameras = [uiCamera];
 		finishText.screenCenter();
 		add(finishText);
 
@@ -38,6 +44,8 @@ class FinishState extends BaseState
 		{
 			if (actualText < texts.length - 1)
 				new FlxTimer().start(3, (_) -> fade.fadeOut(FlxColor.BLACK));
+			else
+				new FlxTimer().start(3, (_) -> System.exit(0));
 		});
 		fade.setCallbackOut(() ->
 		{
