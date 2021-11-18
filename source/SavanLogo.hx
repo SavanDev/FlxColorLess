@@ -24,6 +24,11 @@ class SavanLogo extends BaseState
 		logoText.y += 20;
 		add(logoText);
 
+		#if desktop
+		FlxG.mouse.visible = false;
+		FlxG.mouse.enabled = false;
+		#end
+
 		new FlxTimer().start(3, (_) -> FlxG.switchState(new MenuState()));
 	}
 }

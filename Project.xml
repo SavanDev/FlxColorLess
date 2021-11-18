@@ -22,7 +22,7 @@
 	<window if="html5" resizable="false" />
 
 	<!--Desktop-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="false" />
+	<window if="desktop" orientation="landscape" fullscreen="false" />
 
 	<!--Mobile-specific-->
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
@@ -63,10 +63,10 @@
 	<!--<haxedef name="FLX_NO_NATIVE_CURSOR" />-->
 
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
-	<haxedef name="FLX_NO_MOUSE" />
+	<haxedef name="FLX_NO_MOUSE" unless="desktop" />
 	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
 	<haxedef name="FLX_NO_TOUCH" if="desktop" />
-	<!--<haxedef name="FLX_NO_GAMEPAD" />-->
+	<haxedef name="FLX_NO_GAMEPAD" unless="desktop" />
 
 	<!--Disable the Flixel core sound tray-->
 	<!--<haxedef name="FLX_NO_SOUND_TRAY" />-->

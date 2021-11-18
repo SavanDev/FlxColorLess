@@ -131,7 +131,7 @@ class PlayState extends BaseState
 		gameCamera.bgColor = !BSIDE ? 0xff0163c6 : FlxColor.BLACK;
 		FlxG.cameras.reset(gameCamera);
 
-		var uiCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
+		var uiCamera = new FlxCamera();
 		uiCamera.bgColor = FlxColor.TRANSPARENT;
 
 		persistentDraw = persistentUpdate = true;
@@ -196,7 +196,8 @@ class PlayState extends BaseState
 		uiStrawCount = new FlxText(17, Game.getGameHeight() + 5, 0, "x 0");
 		add(uiStrawCount);
 
-		var uiText = new FlxText(Game.GAME_X, Game.getGameHeight() + 5, Game.getGameWidth(), !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
+		var uiXPos = uiStrawCount.x + uiStrawCount.width;
+		var uiText = new FlxText(uiXPos, Game.getGameHeight() + 5, FlxG.width - uiXPos - 5, !BSIDE ? levelText[LEVEL] : bSideText[LEVEL]);
 		uiText.alignment = RIGHT;
 		add(uiText);
 
