@@ -1,5 +1,6 @@
 package states;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -34,10 +35,16 @@ class MenuState extends BaseState
 	override public function create()
 	{
 		super.create();
-		FlxG.camera.pixelPerfectRender = Game.PIXEL_PERFECT;
 
-		bgColor = 0xff0163c6;
-		FlxG.timeScale = 1.03;
+		var gameCamera = new FlxCamera(Game.GAME_X, 0, Game.getGameWidth(), Game.getGameHeight());
+		gameCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		gameCamera.bgColor = 0xff0163c6;
+		FlxG.cameras.reset(gameCamera);
+
+		var hudCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height);
+		hudCamera.pixelPerfectRender = Game.PIXEL_PERFECT;
+		hudCamera.bgColor = FlxColor.TRANSPARENT;
+		FlxG.cameras.add(hudCamera, false);
 
 		var map = new FlxOgmo3Loader(Paths.getOgmoData(), 'assets/data/levels/level0.json');
 
@@ -74,17 +81,24 @@ class MenuState extends BaseState
 		add(glitchSprite);
 
 		uiName = new FlxText(0, 30, "COLORLESS", 16);
+		// uiName.cameras = [hudCamera];
 		uiName.screenCenter(X);
+		uiName.x -= gameCamera.x;
 		add(uiName);
 
 		var screen = new ScanLines();
+		screen.cameras = [hudCamera];
 		add(screen);
 
-		var uiBorder = new FlxSprite(0, Game.getGameHeight());
-		uiBorder.makeGraphic(FlxG.width, FlxG.height - Std.int(uiBorder.y), FlxColor.BLACK);
-		add(uiBorder);
+		var startTitle:String;
+		#if mobile
+		startTitle = "Touch to start!";
+		#else
+		startTitle = "Press ENTER to start!";
+		#end
 
-		uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, "Press ENTER to start!");
+		uiText = new FlxText(5, Game.getGameHeight() + 5, FlxG.width - 10, startTitle);
+		uiText.cameras = [hudCamera];
 		uiText.alignment = CENTER;
 		add(uiText);
 

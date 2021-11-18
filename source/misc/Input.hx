@@ -1,7 +1,11 @@
 package misc;
 
 import flixel.FlxG;
+#if mobile
+import flixel.input.android.FlxAndroidKey;
+#else
 import flixel.input.keyboard.FlxKey;
+#end
 
 class Input
 {
@@ -14,6 +18,7 @@ class Input
 	public static var SELECT:Bool;
 	public static var BACK:Bool;
 	public static var SHOOT:Bool;
+	public static var PAUSE:Bool;
 
 	// Controles alternos
 	public static var UP_ALT:Bool;
@@ -24,17 +29,31 @@ class Input
 	public static var SELECT_ALT:Bool;
 	public static var BACK_ALT:Bool;
 	public static var SHOOT_ALT:Bool;
+	public static var PAUSE_ALT:Bool;
 
 	// Detección de Gamepad
 	public static var isGamepadConnected:Bool;
 
 	public static function init()
 	{
+		#if mobile
+		FlxG.android.preventDefaultKeys = [FlxAndroidKey.BACK];
+		#else
+		FlxG.sound.volumeDownKeys = [NUMPADMINUS];
+		FlxG.sound.volumeUpKeys = [NUMPADPLUS];
+		FlxG.sound.muteKeys = [NUMPADZERO];
+		#end
 		trace("Input initialized!");
 	}
 
 	public static function update()
 	{
+		#if mobile
+		var firstTouch = FlxG.touches.getFirst();
+		SELECT = firstTouch != null ? firstTouch.justPressed : false;
+		PAUSE = FlxG.android.justPressed.BACK;
+		BACK = FlxG.android.justPressed.BACK;
+		#else
 		UP = FlxG.keys.justPressed.UP;
 		DOWN = FlxG.keys.justPressed.DOWN;
 		LEFT = FlxG.keys.pressed.LEFT;
@@ -43,6 +62,8 @@ class Input
 		SELECT = FlxG.keys.justPressed.ENTER;
 		BACK = FlxG.keys.justPressed.ESCAPE;
 		SHOOT = FlxG.keys.justPressed.Z;
+		PAUSE = FlxG.keys.justPressed.ENTER;
+		#end
 
 		#if desktop
 		// Solamente tengo un humilde joystick genérico, así que trataré mostrar lo mejor que pueda los controles.
@@ -59,6 +80,7 @@ class Input
 			SELECT_ALT = gamepad.justPressed.A;
 			BACK_ALT = gamepad.justPressed.BACK; // Xbox -> Back | Play -> Select
 			SHOOT_ALT = gamepad.justPressed.B;
+			PAUSE_ALT = gamepad.justPressed.START;
 		}
 		else
 			isGamepadConnected = false;

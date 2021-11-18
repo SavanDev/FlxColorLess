@@ -1,9 +1,7 @@
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
-import misc.FadeBoy;
 import misc.Paths;
 import states.MenuState;
 
@@ -25,6 +23,11 @@ class SavanLogo extends BaseState
 		logoText.screenCenter();
 		logoText.y += 20;
 		add(logoText);
+
+		#if desktop
+		FlxG.mouse.visible = false;
+		FlxG.mouse.enabled = false;
+		#end
 
 		new FlxTimer().start(3, (_) -> FlxG.switchState(new MenuState()));
 	}

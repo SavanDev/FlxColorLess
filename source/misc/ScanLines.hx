@@ -1,17 +1,36 @@
 package misc;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 import openfl.display.BitmapData;
 import openfl.geom.Matrix;
 import openfl.geom.Rectangle;
 
 // From HaxeFlixel examples xD
-class ScanLines extends FlxSprite
+class ScanLines extends FlxSpriteGroup
 {
 	public function new(lines:Bool = true)
 	{
 		super();
+		var crtView = new FlxSprite();
+		crtView.loadGraphic(createCRTEffect(lines));
+		crtView.x = Game.GAME_X;
+		add(crtView);
+
+		var leftRect = new FlxSprite().makeGraphic(Game.GAME_X, Game.getGameHeight(), FlxColor.BLACK);
+		add(leftRect);
+
+		var rightRect = new FlxSprite(Game.GAME_X + Game.getGameWidth()).makeGraphic(Game.GAME_X, Game.getGameHeight(), FlxColor.BLACK);
+		add(rightRect);
+
+		var downRect = new FlxSprite(0, Game.getGameHeight()).makeGraphic(FlxG.width, Game.GAME_X, FlxColor.BLACK);
+		add(downRect);
+	}
+
+	function createCRTEffect(lines:Bool):BitmapData
+	{
 		var bitmapdata = new BitmapData(Game.getGameWidth(), Game.getGameHeight(), true, FlxColor.TRANSPARENT);
 		var scanline = new BitmapData(Game.getGameWidth(), 1, true, 0x40000000);
 
@@ -39,6 +58,6 @@ class ScanLines extends FlxSprite
 			bitmapdata.fillRect(new Rectangle(w - cX[i], h - cY[i], cX[i], cY[i]), FlxColor.BLACK);
 		}
 
-		loadGraphic(bitmapdata);
+		return bitmapdata;
 	}
 }
